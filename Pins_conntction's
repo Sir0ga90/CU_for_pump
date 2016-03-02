@@ -1,3 +1,4 @@
+Подключение индикатора:
 PIN	PORT	Indicator_pin
 25	PB12	A
 26	PB13	B
@@ -10,14 +11,6 @@ PIN	PORT	Indicator_pin
 33	PA12	C1
 34	PA13	C2
 35	PF6	C3
-Подключение индикатора:
-
-
-
-
-
-
-
 
 Подключение ДИП-переключателя:
 PIN	PORT	DIP-SW
@@ -55,4 +48,3 @@ PIN	PORT	LED
 15	PA5	ON_SIGNAL
 16	PA6	OFF_SIGNAL
 17	PA7	WORK
-
