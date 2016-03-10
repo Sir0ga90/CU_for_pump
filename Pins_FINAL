@@ -32,7 +32,7 @@ PIN	PORT	AI
 
 Подключение дискретных входов:
 PIN	PORT	DI
-12  PA2   _WMS_
+12	PA2		_WMS_
 15	PB0	  _LEV_2_
 16	PB1	  _LEV_1_
 
