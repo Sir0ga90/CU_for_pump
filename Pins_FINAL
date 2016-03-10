@@ -4,8 +4,8 @@ PIN	PORT	Indicator_pin
 26	PB13	A
 27	PB14	D
 28	PB15	F
-29	PA8	  DP
-30	PA9	  B
+29	PA8   DP
+30	PA9   B
 31	PA10	C
 32	PA11	G
 33	PA12	C2
@@ -37,7 +37,7 @@ PIN	PORT	DI
 16	PB1   _LEV_1_
 
 Подключение кнопок:
-PIN	PORT	SB
+PIN PORT  SB
 18  PB0   W_RST
 17  PA7   I<>U
 7   NRST  -
