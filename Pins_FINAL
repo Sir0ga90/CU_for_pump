@@ -34,7 +34,7 @@ PIN	PORT	AI
 PIN	PORT	DI
 12	PA2   _WMS_
 15	PA5   _LEV_2_
-16	PB1   _LEV_1_
+16	PA6   _LEV_1_
 
 Подключение кнопок:
 PIN PORT  SB
