@@ -38,8 +38,8 @@ PIN	PORT	DI
 
 Подключение кнопок:
 PIN	PORT	SB
-18	PB0	W_RST
-17	PA7	I<>U
+18	PB0	  W_RST
+17	PA7	  I<>U
 7	  NRST	-
 
 Подключение LED:
