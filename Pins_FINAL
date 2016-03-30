@@ -9,8 +9,9 @@ PIN	PORT	Indicator_pin
 31	PA10	C
 32	PA11	G
 33	PA12	C2
-34	PA13	C1
-35	PF6	  C3
+34	PA13	C3
+35	PF6	  C1
+
 
 Подключение ДИП-переключателя:
 PIN	PORT	DIP-SW
