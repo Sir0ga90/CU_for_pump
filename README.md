@@ -1,1 +1,1 @@
-peripherial functions
+peripheral functions
