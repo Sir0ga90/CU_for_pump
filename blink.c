@@ -95,38 +95,8 @@ void init_dig(void){
 }
 //--------------------------------------------------------------------------
 void init_disp(void){
-	void off_seg_1(void);
-	void off_seg_2(void);
-	void off_seg_3(void);
+	off_seg_1();
+	off_seg_2();
+	off_seg_3();
 	HAL_GPIO_WritePin(IND_PRT_A, DP, GPIO_PIN_RESET);
 }
-
-
-
-//void blink(void){
-//	uint16_t tmp = out_dig;
-//			
-//	uint16_t dig = tmp%10;
-//	tmp = tmp/10;
-//	
-//	HAL_GPIO_WritePin(IND_PORT, C1|C2|C3, GPIO_PIN_RESET);
-//	HAL_GPIO_WritePin(IND_PORT, C3, GPIO_PIN_SET);
-//	dig_to_port(dig, dp);
-//	
-//	
-//	
-//	dig = tmp%10;
-//	tmp = tmp/10;
-//	
-//	HAL_GPIO_WritePin(IND_PORT, C1|C2|C3, GPIO_PIN_RESET);
-//	HAL_GPIO_WritePin(IND_PORT, C2, GPIO_PIN_SET);
-//	dig_to_port(dig, dp);
-
-//	
-//			
-//	dig = tmp%10;
-//	
-//	HAL_GPIO_WritePin(IND_PORT, C1|C2|C3, GPIO_PIN_RESET);
-//	HAL_GPIO_WritePin(IND_PORT, C1, GPIO_PIN_SET);
-//	dig_to_port(tmp, dp);
-//}
