@@ -7,3 +7,4 @@ uint32_t calculate_val(uint32_t adc_val);
 
 void dig_to_disp(uint32_t out_dig);
 
+uint32_t sample_val(uint32_t new_adc);
