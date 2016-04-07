@@ -47,7 +47,7 @@ void dig_to_disp(uint32_t out_dig){
 	uint32_t disp_val = 0;
 	uint32_t last_val = 0;
 
-uint32_t sample_val(uint32_t new_adc){
+uint32_t sample_val_2(uint32_t new_adc){
 	disp_val += new_adc;
 	
 	if (i > 99){
@@ -58,3 +58,26 @@ uint32_t sample_val(uint32_t new_adc){
 	return last_val;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
+void read_button(void){
+	HAL_Delay(50);
+	switch(button){
+		case 1:{
+			if (button == 1) chanel++;
+			if (chanel == toggle) chanel = _I_;
+				button = 0;
+			break;
+			}
+		case 3:{
+			HAL_GPIO_WritePin(work_led_GPIO_Port, work_led_Pin, GPIO_PIN_SET);
+			button = 0;
+			break;
+		}
+		default:{
+			button = 0;
+			break;
+		}
+			
+	}
+	
+			
+}
