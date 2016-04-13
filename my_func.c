@@ -10,14 +10,14 @@ extern uint32_t adc_val[2];
 extern uint32_t I_val;
 extern uint32_t U_val;
 extern uint32_t cnt;
+extern State button;
 //------------------------------------------------------------------------------------------------------------------------------------Extern_functions
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-uint32_t calculate_val(uint32_t adc_val){														// convertion val from adc to real val
-	
-	static const uint16_t devide_coef = 1220;																// coefficient for convertion, practical val (calculate val - 4095/330 = 12,41)
+uint32_t calculate_val(uint32_t adc_val){										//return real val for 3.3V meter
+	static const uint16_t devide_coef = 1220;													// coefficient for convertion, practical val (calculate val - 4095/330 = 12,41)
 	return (adc_val*100)/devide_coef;																	// F.E. for 12 bit adc for 4095 = 3.3V: 4095*100/1220, 
-																																		// * on 100 for flash val in 3 seg disp
+																																		// "*100" for flush val in 3 seg disp
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 uint8_t counter = 0;		// counter for sigments of led: for 1 interrupt 1 segment
@@ -72,32 +72,17 @@ uint32_t sample_val_2(uint32_t new_adc){
 void read_button(void){
 	HAL_Delay(20);
 	switch(button){
-		case 1:{
-			if (button == 1) chanel++;
+		case w_rst:{
+			chanel++;
 			if (chanel == toggle){ 
 				chanel = _I_;
 				HAL_GPIO_WritePin(rel_GPIO_Port, rel_Pin, GPIO_PIN_SET);
 			}
-			button = 0;
+			button = off;
 			break;
 			}
-		case 2:{
-			HAL_GPIO_TogglePin(fail_led_GPIO_Port, fail_led_Pin);
-			button = 0;
-			break;
-		}
-		case 3:{
-			HAL_GPIO_TogglePin(work_led_GPIO_Port, work_led_Pin);
-			button = 0;
-			break;
-		}
-		case 4:{
-			HAL_GPIO_TogglePin(off_sig_led_GPIO_Port, off_sig_led_Pin);
-			button = 0;
-			break;
-		}
 		default:{
-			button = 0;
+			button = off;
 			break;
 		}
 			
@@ -105,9 +90,9 @@ void read_button(void){
 			
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
-uint32_t sampl_val_3(Chanel chanel){
+uint32_t sampl_val_3(Chanel chanel){ //unused
 	
-	uint32_t out_d = 0;	
+	uint32_t out_d = 0;														
 	uint32_t out_d_LED = 0;
 	uint16_t sampl_count = 0;
 	uint32_t last_d = 1;

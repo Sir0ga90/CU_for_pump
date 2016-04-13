@@ -1,5 +1,6 @@
 // by Sir0ga, 22.03.2016
-
+#ifndef BLINK_H
+#define BLINK_H
 
 #include "stm32f030x8.h"
 void delay(void);
@@ -50,4 +51,4 @@ void init_disp(void);
 #define IND_PRT_B 		GPIOB
 #define IND_PRT_F 		GPIOF
 
-
+#endif

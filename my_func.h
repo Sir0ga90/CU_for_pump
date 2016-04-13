@@ -1,11 +1,15 @@
+#ifndef MY_FUNC_H
+#define MY_FUNC_H
+
 #include "stm32f030x8.h"
 #include "stm32f0xx.h"                  // Device header
 
 //----------------------------------------------------------------------------
 typedef enum {_I_, _U_, toggle}Chanel;      		// type of ADC chanel
+
+typedef enum{off, w_rst, i_u}State; 
 //----------------------------------------------------------------------------
 extern Chanel chanel;														
-extern uint8_t button;
 //----------------------------------------------------------------------------
 uint32_t calculate_val(uint32_t adc_val);
 uint32_t calculate_val_ac(uint32_t adc_val);
@@ -19,3 +23,5 @@ inline void get_real_val(void);
 
 void read_button(void);
 //----------------------------------------------------------------------------
+
+#endif
