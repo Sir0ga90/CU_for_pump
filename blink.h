@@ -18,7 +18,7 @@ void init_dig(void);
 void on_dig(uint8_t digit);
 void init_disp(void);
 
-
+void level_indication(void);
 
 
 #define A 	GPIO_PIN_13

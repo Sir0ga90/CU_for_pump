@@ -1,8 +1,9 @@
-#include "Blink.h"
+#include "blink.h"
 #include "stm32f0xx_hal.h"
+#include "level.h"
 
 extern uint16_t out_dig;
-
+extern Tank tank;
 
 void delay(){
 	HAL_Delay(6);
@@ -99,4 +100,23 @@ void init_disp(void){
 	off_seg_2();
 	off_seg_3();
 	HAL_GPIO_WritePin(IND_PRT_A, DP, GPIO_PIN_RESET);
+}
+//--------------------------------------------------------------------------
+void level_indication(void){
+	
+	if (tank.full == 1)
+		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_SET);
+	else
+		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_RESET);
+	
+	if (tank.half_full == 1)
+		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_SET);
+	else
+		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_RESET);
+	
+	if (tank.error_level == 1)
+		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_SET);
+	else
+		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_RESET);
+
 }

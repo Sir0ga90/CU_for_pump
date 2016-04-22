@@ -11,16 +11,18 @@ typedef enum {dry, water}Well_level;																			// levels in well
 
 typedef struct Tank_st{
 	
-	uint8_t 					empty 		: 1;
-	uint8_t 					half_full : 1;
-	__packed uint8_t 	full 			: 1;							// "__packed" - for aligning struct in memory
-
+	uint8_t						error_level	: 1;							// if levels ON in wrong order: 
+																									//			L2-ON,  	L1-OFF	
+	uint8_t 					empty 			: 1;							// if 	L2-OFF, 	L1-OFF	
+	uint8_t 					half_full 	: 1;							// if 	L2-OFF, 	L1-ON
+	__packed uint8_t 	full 				: 1;							// if 	L2-ON,  	L1-ON 
+																									// "__packed" - for aligning struct in memory
 }Tank;
 //---------------------------------------------------------------globals
 
 //---------------------------------------------------------------extern
 
 //---------------------------------------------------------------func_prototyps
-void read_level(void);
+void get_tank_level(void);
 
 #endif
