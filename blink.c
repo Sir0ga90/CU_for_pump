@@ -20,27 +20,27 @@ void dig_to_port(uint8_t dig, uint8_t dp){
 
 //--------------------------------------------------------------------------
 void on_seg_1(void){
-	HAL_GPIO_WritePin(IND_PRT_F, C1, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(IND_PRT_B, C1, GPIO_PIN_SET);
 }
 //--------------------------------------------------------------------------
 void on_seg_2(void){
-	HAL_GPIO_WritePin(IND_PRT_A, C2, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(IND_PRT_B, C2, GPIO_PIN_SET);
 }
 //--------------------------------------------------------------------------
 void on_seg_3(void){
-	HAL_GPIO_WritePin(IND_PRT_A, C3, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(IND_PRT_B, C3, GPIO_PIN_SET);
 }
 //--------------------------------------------------------------------------
 void off_seg_1(void){
-	HAL_GPIO_WritePin(IND_PRT_F, C1, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(IND_PRT_B, C1, GPIO_PIN_RESET);
 }
 //--------------------------------------------------------------------------
 void off_seg_2(void){
-	HAL_GPIO_WritePin(IND_PRT_A, C2, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(IND_PRT_B, C2, GPIO_PIN_RESET);
 }
 //--------------------------------------------------------------------------
 void off_seg_3(void){
-	HAL_GPIO_WritePin(IND_PRT_A, C3, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(IND_PRT_B, C3, GPIO_PIN_RESET);
 }
 //--------------------------------------------------------------------------
 
@@ -48,8 +48,8 @@ void off_seg_3(void){
 void on_dig(uint8_t digit){
 	switch (digit){
 		case 0:
-			HAL_GPIO_WritePin(IND_PRT_A, B | C, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(IND_PRT_B, A | D | E | F, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_A, F | B | C, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_B, A | D | E, GPIO_PIN_SET);
 			break;
 		case 1:
 			HAL_GPIO_WritePin(IND_PRT_A, B | C, GPIO_PIN_SET);
@@ -63,36 +63,35 @@ void on_dig(uint8_t digit){
 			HAL_GPIO_WritePin(IND_PRT_B, A | D, GPIO_PIN_SET);
 			break;
 		case 4:
-			HAL_GPIO_WritePin(IND_PRT_A, B | C | G, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(IND_PRT_B, F, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_A, B | C | F | G, GPIO_PIN_SET);
 			break;
 		case 5:
-			HAL_GPIO_WritePin(IND_PRT_A, C | G, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(IND_PRT_B, A | F | D, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_A, C | F | G, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_B, A | D, GPIO_PIN_SET);
 			break;
 		case 6:
-			HAL_GPIO_WritePin(IND_PRT_A, C | G, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(IND_PRT_B, A | D | E | F, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_A, C | F | G, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_B, A | D | E, GPIO_PIN_SET);
 			break;
 		case 7:
 			HAL_GPIO_WritePin(IND_PRT_A, B | C, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(IND_PRT_B, A, GPIO_PIN_SET);
 			break;
 		case 8:
-			HAL_GPIO_WritePin(IND_PRT_A, B | C | G, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(IND_PRT_B, A | D | E | F, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_A, B | C | F | G, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_B, A | D | E, GPIO_PIN_SET);
 			break;
 		case 9:
-			HAL_GPIO_WritePin(IND_PRT_A, B | C | G, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(IND_PRT_B, A | D | F, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_A, B | C | F | G, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(IND_PRT_B, A | D, GPIO_PIN_SET);
 			break;
 	}
 }
 
 //--------------------------------------------------------------------------
 void init_dig(void){
-	HAL_GPIO_WritePin(IND_PRT_A, B | C | G, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(IND_PRT_B, A | D | E | F, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(IND_PRT_A, B | C | F | G, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(IND_PRT_B, A | D | E, GPIO_PIN_RESET);
 }
 //--------------------------------------------------------------------------
 void init_disp(void){
@@ -102,21 +101,3 @@ void init_disp(void){
 	HAL_GPIO_WritePin(IND_PRT_A, DP, GPIO_PIN_RESET);
 }
 //--------------------------------------------------------------------------
-void level_indication(void){
-	
-	if (tank.full == 1)
-		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_SET);
-	else
-		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_RESET);
-	
-	if (tank.half_full == 1)
-		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_SET);
-	else
-		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_RESET);
-	
-	if (tank.error_level == 1)
-		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_SET);
-	else
-		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_RESET);
-
-}

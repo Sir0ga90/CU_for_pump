@@ -18,22 +18,21 @@ void init_dig(void);
 void on_dig(uint8_t digit);
 void init_disp(void);
 
-void level_indication(void);
 
 
-#define A 	GPIO_PIN_13
-#define B 	GPIO_PIN_9
+#define A 	GPIO_PIN_15
+#define B 	GPIO_PIN_11
 #define C 	GPIO_PIN_10
 #define D 	GPIO_PIN_14
-#define E 	GPIO_PIN_12
-#define F 	GPIO_PIN_15
-#define G 	GPIO_PIN_11
+#define E 	GPIO_PIN_13
+#define F 	GPIO_PIN_9
+#define G 	GPIO_PIN_12
 #define DP 	GPIO_PIN_8
 
 
-#define C1		GPIO_PIN_6			//cathod of digit 1 (from right)
-#define C2		GPIO_PIN_12			//cathod of digit 2 (from right)
-#define C3		GPIO_PIN_13			//cathod of digit 3 (from right)
+#define C1		GPIO_PIN_11			//cathod of digit 1 (from right)
+#define C2		GPIO_PIN_10			//cathod of digit 2 (from right)
+#define C3		GPIO_PIN_12			//cathod of digit 3 (from right)
 
 //#define D_0		(A | B | C | D | E | F)
 //#define D_1		(B | C)
@@ -49,6 +48,6 @@ void level_indication(void);
 
 #define IND_PRT_A 		GPIOA
 #define IND_PRT_B 		GPIOB
-#define IND_PRT_F 		GPIOF
+//#define IND_PRT_F 		GPIOF
 
 #endif

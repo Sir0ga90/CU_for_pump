@@ -6,8 +6,7 @@
 #include "stm32f0xx_hal.h"
 
 //---------------------------------------------------------------types
-typedef enum {error, empty, half_full, full}Level; 												// levels in tank
-typedef enum {dry, water}Well_level;																			// levels in well
+typedef enum {dry, full}Well_level;																			// levels in well
 
 typedef struct Tank_st{
 	
@@ -23,6 +22,8 @@ typedef struct Tank_st{
 //---------------------------------------------------------------extern
 
 //---------------------------------------------------------------func_prototyps
-void get_tank_level(void);
+inline void get_tank_level(void);
+inline void get_well_level(void);
+inline void level_indication(void);
 
 #endif

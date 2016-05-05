@@ -4,7 +4,6 @@
 #include "stm32f0xx_hal.h"
 
 //---------------------------------------------------------------------------------------
-extern Level 				t_level;
 extern Well_level 	w_level;
 extern Tank 				tank;
 //---------------------------------------------------------------------------------------for level_enum
@@ -59,4 +58,30 @@ void get_tank_level(void){
 	
 }
 //----------------------------------------------------------------------------------------
+void get_well_level(void){
+	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2) == SET)
+		w_level = full;
+	else 
+		w_level = dry;
+}
+//----------------------------------------------------------------------------------------
+void level_indication(void){
+	
+	if (tank.full == 1)
+		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_SET);
+	else
+		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_RESET);
+	
+	if (tank.half_full == 1)
+		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_SET);
+	else
+		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_RESET);
+	
+	if (w_level == dry)
+		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_SET);
+	else
+		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_RESET);
+
+}
+//---------------------------------------------------------------------------------------
 
