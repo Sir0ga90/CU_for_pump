@@ -1,22 +1,22 @@
 Подключение индикатора:
 PIN	PORT	Indicator_pin
-25	PB12	E
-26	PB13	A
+21  PB10  C2
+22  PB11  C1
+25	PB12	C3
+26	PB13	E
 27	PB14	D
-28	PB15	F
+28	PB15	A
 29	PA8   DP
-30	PA9   B
+30	PA9   F
 31	PA10	C
-32	PA11	G
-33	PA12	C2
-34	PA13	C3
-35	PF6	  C1
+32	PA11	B
+33	PA12	G
 
 
 Подключение ДИП-переключателя:
 PIN	PORT	DIP-SW
-36	PF7 	LOGIC_2
-37	PA14	LOGIC_3
+35	PF6 	LOGIC_2
+36	PF7 	LOGIC_3
 38	PA15	LOGIC_4
 39	PB3	  INV_LOGIC
 40	PB4	  IN_TIME
@@ -26,29 +26,34 @@ PIN	PORT	DIP-SW
 45	PB8	  I_W_3
 46	PB9	  I_W_4
 
+
 Подключение аналоговых входов:
 PIN	PORT	AI
-10	PA0	  _I_
-11	PA1  	_U_
+10	PA0	  _U_
+11	PA1  	_I_
+
 
 Подключение дискретных входов:
 PIN	PORT	DI
 12	PA2   _WMS_
-15	PA5   _LEV_2_
-16	PA6   _LEV_1_
+13	PA3   _LEV_1_
+14	PA4   _LEV_2_
+
 
 Подключение кнопок:
 PIN PORT  SB
-18  PB0   W_RST
-17  PA7   I<>U
+15  PA5   W_RST
+16  PA6   I<>U
 7   NRST  -
+
 
 Подключение LED:
 PIN	PORT	LED
-19	PB1   FAIL
-20	PB2  	ON_SIGNAL
-21	PB10  OFF_SIGNAL
-22	PB11 	WORK
+17	PA7   FAIL
+18	PB0  	ON_SIGNAL
+19	PB1   OFF_SIGNAL
+20	PB2 	WORK
+
 
 Подключение реле:
 PIN	PORT	LED
