@@ -1,7 +1,7 @@
 Подключение индикатора:
 PIN	PORT	Indicator_pin
-21  PB10  C2
-22  PB11  C1
+21    PB10  C2
+22    PB11  C1
 25	PB12	C3
 26	PB13	E
 27	PB14	D
