@@ -40,7 +40,7 @@ typedef struct dip_sw_st{
 }dip_sw;
 //----------------------------------------------------------------------------------------------------------------------------
 
-void get_func_vals(void);
+void get_dip_sw_vals(void);
 void enable_func_vals(void);
 
 #endif

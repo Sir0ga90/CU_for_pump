@@ -4,7 +4,13 @@
 //------------------------------------------------------------------------------
 extern dip_sw dip;
 
-void get_func_vals(void){
+//extern uint32_t U_val;
+//extern uint32_t I_val;
+extern uint16_t tres_U;
+extern uint8_t tres_I;
+
+
+void get_dip_sw_vals(void){
 	
 	dip.fail_blocking = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_7);
 	dip.lev1_logic    = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_14);
@@ -14,8 +20,8 @@ void get_func_vals(void){
 	dip.threshold_U   = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5);
 	
 	static uint16_t i;
-	i = GPIOB->IDR & 960;
-	i >>= 6;
+	i = GPIOB->IDR & 960;        	//960 = 0000 0011 1100 0000 - for bits of PORT_B wich are 4_current DIP_switches
+	i >>= 6;											//0000 0011 1100 0000 -> 0000 0000 0000 1111
 	dip.i_sw = i;
 	
 }
@@ -37,3 +43,7 @@ void get_func_vals(void){
 //void fail_blocking(void){
 //	
 //}
+void set_U_tres(void){
+	if (dip.threshold_U == RESET)  		//because in ON state switch on the LOW level
+		tres_U = 220 * 0.1;
+}
