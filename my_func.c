@@ -25,6 +25,7 @@ uint8_t counter = 0;		// counter for sigments of led: for 1 interrupt 1 segment
 uint32_t tmp = 0;
 uint32_t dig = 0;
 uint8_t dp = 0;
+
 void dig_to_disp(uint32_t out_dig){
 	switch (counter){
 		case 0:
@@ -32,7 +33,7 @@ void dig_to_disp(uint32_t out_dig){
 			dig = tmp%10;			
 			tmp = tmp/10;
 			init_disp();
-			on_seg_1();
+			on_seg_3();
 			dig_to_port(dig, dp);
 			break;
 		case 1:
@@ -45,7 +46,7 @@ void dig_to_disp(uint32_t out_dig){
 		case 2:
 			dig = tmp%10;
 			init_disp();
-			on_seg_3();
+			on_seg_1();
 			//dp = 1;
 			dig_to_port(tmp, dp);
 			break;

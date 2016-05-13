@@ -6,6 +6,8 @@
 //---------------------------------------------------------------------------------------
 extern Well_level 	w_level;
 extern Tank 				tank;
+extern Sens					sen1;
+extern Sens					sen2;
 //---------------------------------------------------------------------------------------for level_enum
 //	void read_level(void){
 //  if (HAL_GPIO_ReadPin(lev_1_GPIO_Port, lev_1_Pin) == SET){
@@ -26,40 +28,42 @@ extern Tank 				tank;
 //---------------------------------------------------------------------------------------for level_struct
 void get_tank_level(void){
 	
-	if (HAL_GPIO_ReadPin(lev_1_GPIO_Port, lev_1_Pin) == SET){								// if L1-OFF
+	if (HAL_GPIO_ReadPin(input_lev1_GPIO_Port, input_lev1_Pin) == sen1.dry){								// if L1-OFF
 		
-		if (HAL_GPIO_ReadPin(lev_2_GPIO_Port, lev_2_Pin) == RESET){						// & L2-ON
-			tank.full = 0;
-			tank.half_full = 0;
-			tank.error_level = 1;																								// wrong placement of sensors
+		if (HAL_GPIO_ReadPin(input_lev2_GPIO_Port, input_lev2_Pin) == sen2.in_water){					// & L2-ON
+			tank.full = 				0;
+			tank.half_full = 		0;
+			tank.empty = 				0;
+			tank.error_level = 	1;																								// wrong placement of sensors
 			return;
 		}
 		else
-			tank.half_full = 0;
-			tank.empty = 1;
-			tank.error_level = 0;									// if before was error
+			tank.half_full = 		0;
+			tank.empty = 				1;
+			tank.error_level = 	0;										// if before was error
 	}
 	else {
-		tank.half_full = 1;
-		tank.error_level = 0;										// if before was error
+		tank.half_full = 			1;
+		tank.error_level = 		0;										// if before was error
+		tank.empty = 					0;										// if before was empty
 	}
 	
 	
-	if (HAL_GPIO_ReadPin(lev_2_GPIO_Port, lev_2_Pin) == SET){
-		tank.full = 0;
-		tank.error_level = 0;										// if before was error
+	if (HAL_GPIO_ReadPin(input_lev2_GPIO_Port, input_lev2_Pin) == sen2.in_water){				// right work of Lev2{
+		tank.full = 					1;
+		tank.error_level = 		0;											// if before was error
 		return;
 	}
 	else {
-		tank.full = 1;
-		tank.error_level = 0;										// if before was error
+		tank.full = 					0;
+		tank.error_level = 		0;											// if before was error
 		return;
 	}
 	
 }
 //----------------------------------------------------------------------------------------
 void get_well_level(void){
-	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_2) == SET)
+	if (HAL_GPIO_ReadPin(input_fail_GPIO_Port, input_fail_Pin) == RESET)
 		w_level = full;
 	else 
 		w_level = dry;
@@ -68,19 +72,19 @@ void get_well_level(void){
 void level_indication(void){
 	
 	if (tank.full == 1)
-		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led_lev2_GPIO_Port, led_lev2_Pin, GPIO_PIN_SET);
 	else
-		HAL_GPIO_WritePin(off_sig_led_GPIO_Port, off_sig_led_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led_lev2_GPIO_Port, led_lev2_Pin, GPIO_PIN_RESET);
 	
 	if (tank.half_full == 1)
-		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led_lev1_GPIO_Port, led_lev1_Pin, GPIO_PIN_SET);
 	else
-		HAL_GPIO_WritePin(on_sig_led_GPIO_Port, on_sig_led_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led_lev1_GPIO_Port, led_lev1_Pin, GPIO_PIN_RESET);
 	
 	if (w_level == dry)
-		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(led_fail_GPIO_Port, led_fail_Pin, GPIO_PIN_SET);
 	else
-		HAL_GPIO_WritePin(fail_led_GPIO_Port, fail_led_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led_fail_GPIO_Port, led_fail_Pin, GPIO_PIN_RESET);
 
 }
 //---------------------------------------------------------------------------------------

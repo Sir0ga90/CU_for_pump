@@ -5,7 +5,7 @@
 #include "stm32f0xx.h"                  // Device header
 
 //----------------------------------------------------------------------------
-typedef enum {_I_, _U_, toggle}Chanel;      		// type of ADC chanel
+typedef enum {_U_, _I_, toggle}Chanel;      		// type of ADC chanel
 
 typedef enum{off, w_rst, i_u}State; 
 //----------------------------------------------------------------------------
@@ -22,6 +22,7 @@ inline void store_val(void);
 inline void get_real_val(void);
 
 void read_button(void);
+void read_button_interrupt(void);
 //----------------------------------------------------------------------------
 
 #endif

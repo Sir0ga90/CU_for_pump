@@ -8,6 +8,16 @@
 //---------------------------------------------------------------types
 typedef enum {dry, full}Well_level;																			// levels in well
 
+//enum Sen{sen_dry, sen_in_water};
+
+typedef struct Sen_st{
+	
+						uint8_t in_water :1;
+	__packed 	uint8_t dry      :1;
+	
+}Sens;
+
+	
 typedef struct Tank_st{
 	
 	uint8_t						error_level	: 1;							// if levels ON in wrong order: 
