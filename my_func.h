@@ -23,6 +23,7 @@ inline void get_real_val(void);
 
 void read_button(void);
 void read_button_interrupt(void);
+void set_but_vals(void);
 //----------------------------------------------------------------------------
 
 #endif

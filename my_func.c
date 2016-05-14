@@ -12,6 +12,8 @@ extern uint32_t I_val;
 extern uint32_t U_val;
 extern uint32_t cnt;
 extern State button;
+
+extern uint8_t push_flag;
 //------------------------------------------------------------------------------------------------------------------------------------Extern_functions
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -71,7 +73,7 @@ uint32_t sample_val_2(uint32_t new_adc){
 	return last_val;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
-void read_button(void){
+void read_button_interrupt(void){
 	HAL_Delay(20);
 	switch(button){
 		case w_rst:{
@@ -90,6 +92,83 @@ void read_button(void){
 			
 	}
 			
+}
+//--------------------------------------------------------------------------------------------------------------------------------------------------------
+void read_button(void){
+	if ((GPIOA->IDR & but_i_u_Pin) || (GPIOA->IDR & but_w_rst_Pin)){
+		HAL_Delay(10);
+		if ((GPIOA->IDR & but_i_u_Pin) || (GPIOA->IDR & but_w_rst_Pin)){
+			HAL_Delay(10);
+			if ((GPIOA->IDR & but_i_u_Pin) || (GPIOA->IDR & but_w_rst_Pin)){
+				
+				if (HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_i_u_Pin) == RESET){
+					button = i_u;
+					push_flag = 1;
+				}
+				else if (HAL_GPIO_ReadPin(but_w_rst_GPIO_Port, but_w_rst_Pin) == RESET){
+					button = w_rst;
+					push_flag = 1;
+				}
+				
+		}
+		else 
+			button = off;
+	} 
+	else 
+		button = off;
+	}
+	else
+		button = off;
+		
+//	if (HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_i_u_Pin) == RESET){
+//		HAL_Delay(10);
+//		if (HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_i_u_Pin) == RESET){
+//			HAL_Delay(10);
+//			if (HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_i_u_Pin) == RESET){
+//				
+//				if (HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_i_u_Pin) == RESET){
+//					button = i_u;
+//					push_flag = 1;
+//				}
+//				if (HAL_GPIO_ReadPin(but_w_rst_GPIO_Port, but_w_rst_Pin) == RESET){
+//					button = w_rst;
+//					push_flag = 1;
+//				}
+//			}
+//			else
+//				button = off;
+//		}
+//		else
+//			button = off;
+//	}
+//	else {
+//		button = off;
+//	}	
+}
+//--------------------------------------------------------------------------------------------------------------------------------------------------------
+void set_but_vals(void){
+	
+	while(HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_i_u_Pin) == RESET)
+		;
+		
+	if (button == i_u){
+		
+		chanel++;
+		HAL_GPIO_TogglePin(led_work_GPIO_Port, led_work_Pin);
+		HAL_GPIO_TogglePin(rel_GPIO_Port, rel_Pin);
+		
+		if (chanel == toggle) chanel = _U_;
+
+	}
+	
+	while(HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_w_rst_Pin) == RESET)
+		;
+	
+	if (button == w_rst){
+		HAL_GPIO_TogglePin(led_work_GPIO_Port, led_work_Pin);
+	}
+	button = off;
+	
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 uint32_t sampl_val_3(Chanel chanel){ //unused
