@@ -5,6 +5,12 @@
 #include "dip_sw.h"
 #include "level.h"
 
-void pump(const Tank* t);
+inline void pump(void);
+inline void drain(void);
+inline void work_logic(void);
+
+typedef enum{
+	err, e_pump, e_drain
+} Logic;
 
 #endif
