@@ -31,14 +31,28 @@ void drain(void){
 		HAL_GPIO_WritePin(rel_GPIO_Port, rel_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(led_work_GPIO_Port, led_work_Pin, GPIO_PIN_SET);
 	}
-		
+
+}
+//-------------------------------------------------------------------------------------
+void stop(void){
+	
+	HAL_GPIO_WritePin(rel_GPIO_Port, rel_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(led_work_GPIO_Port, led_work_Pin, GPIO_PIN_RESET);
+	
 }
 //-------------------------------------------------------------------------------------
 void work_logic(void){
+	
 	if (logic == e_pump){
 		pump();
 	}
+	
 	else if (logic == e_drain){
 		drain();
 	}
+	
+	else 
+		stop();
+	
+	
 }

@@ -18,6 +18,7 @@ void init_dig(void);
 void on_dig(uint8_t digit);
 void init_disp(void);
 
+uint32_t disp_chanel(void);
 
 
 #define A 	GPIO_PIN_15
@@ -34,20 +35,8 @@ void init_disp(void);
 #define C2		GPIO_PIN_10			//cathod of digit 2 (from right)
 #define C3		GPIO_PIN_12			//cathod of digit 3 (from right)
 
-//#define D_0		(A | B | C | D | E | F)
-//#define D_1		(B | C)
-//#define D_2		(A | B | G | E | D)
-//#define D_3 	(A | B | C | G | D)
-//#define D_4		(F | G | B | C)
-//#define D_5 	(A | F | G | C | D)
-//#define D_6 	(A | F | G | C | D | E)
-//#define D_7 	(A | B | C)
-//#define D_8		(A | B | C | D | E | F | G)
-//#define D_9 	(A | B | C | D | F | G)
-
 
 #define IND_PRT_A 		GPIOA
 #define IND_PRT_B 		GPIOB
-//#define IND_PRT_F 		GPIOF
 
 #endif

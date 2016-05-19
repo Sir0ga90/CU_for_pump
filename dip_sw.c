@@ -8,8 +8,8 @@ extern dip_sw dip;
 
 //extern uint32_t U_val;
 //extern uint32_t I_val;
-extern uint16_t tres_U;
-extern uint8_t tres_I;
+extern double tres_U;
+extern double tres_I;
 extern Sens sen1;
 extern Sens sen2;
 
@@ -55,14 +55,14 @@ void set_U_tres(void){
 	static uint8_t percent_10_U_ = 22;				//10% of 220
 	
  	if (dip.threshold_U == RESET)  		// because in ON state switch on the LOW level
-		tres_U = percent_15_U_;
+		tres_U = (double)percent_15_U_;
 	else
-		tres_U = percent_10_U_;
+		tres_U = (double)percent_10_U_;
 	
 }
 //---------------------------------------------------------------------------------
 void set_I_tres(void){							
-	tres_I = dip.i_sw + 1;
+	tres_I = (double)(dip.i_sw + 1);
 }
 //---------------------------------------------------------------------------------
 void set_logic_lev1(void){
@@ -102,6 +102,7 @@ void set_work_logic(void){
 		logic = e_drain;
 	else if (dip.logic_inv == SET)
 		logic = e_pump;
-	else 
+	else
 		logic = err;
 }
+

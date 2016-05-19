@@ -1,9 +1,12 @@
 #include "blink.h"
 #include "stm32f0xx_hal.h"
 #include "level.h"
+#include "my_func.h"
 
 extern uint16_t out_dig;
-extern Tank tank;
+extern uint32_t I_val;
+extern uint32_t U_val;
+
 
 void delay(){
 	HAL_Delay(6);
@@ -101,3 +104,9 @@ void init_disp(void){
 	HAL_GPIO_WritePin(IND_PRT_A, DP, GPIO_PIN_RESET);
 }
 //--------------------------------------------------------------------------
+uint32_t disp_chanel(void){
+	if (chanel == _I_)
+		return I_val;
+	else 
+		return U_val;
+}

@@ -85,7 +85,7 @@ void level_indication(void){
 }
 //---------------------------------------------------------------------------------------
 
-void work(void){
+void level_work(void){
 	
 	Tank func_tank = {0, 0, 0, 0};
 	

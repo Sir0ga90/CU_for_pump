@@ -35,6 +35,7 @@ typedef struct Tank_st{
 inline Tank get_tank_level(void);
 inline void get_well_level(void);
 inline void level_indication(void);
-inline void work(void);
+inline void level_work(void);
+inline void stop(void);
 
 #endif

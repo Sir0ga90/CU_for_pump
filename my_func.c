@@ -14,6 +14,8 @@ extern uint32_t cnt;
 extern State button;
 
 extern uint8_t push_flag;
+
+extern Chanel chanel;
 //------------------------------------------------------------------------------------------------------------------------------------Extern_functions
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -28,7 +30,7 @@ uint8_t counter = 0;		// counter for sigments of led: for 1 interrupt 1 segment
 uint32_t tmp = 0;
 uint32_t dig = 0;
 uint8_t dp = 0;
-
+	
 void dig_to_disp(uint32_t out_dig){
 	switch (counter){
 		case 0:
@@ -44,7 +46,10 @@ void dig_to_disp(uint32_t out_dig){
 			tmp = tmp/10;
 			init_disp();
 			on_seg_2();
+		
+			if (chanel == _I_) dp = 1;				// unpdb
 			dig_to_port(dig, dp);
+			dp = 0;														// unpdb	
 			break;
 		case 2:
 			dig = tmp%10;
