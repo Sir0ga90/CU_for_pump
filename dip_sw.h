@@ -8,12 +8,12 @@
 //----------------------------------------------------------------------------------------------------------------------------
 typedef struct dip_sw_st{
 	
-					 uint8_t fail_blocking  			:1;			// ON/OFF motor blocking after 5 fail-toggle		'1' - ON			'0' - OFF
-					 uint8_t lev1_logic   				:1;			// NO/NC in normal state												'1' - NO			'0' - NC
-					 uint8_t lev2_logic   				:1;			// NO/NC in normal state												'1' - NO			'0' - NC
-					 uint8_t logic_inv		 				:1;			// level state inversion												'1' - ON			'0' - OFF
-					 uint8_t input_delay 					:1;     // delay after changing level state: 						'1' - 5s			'0' - 10s
-					 uint8_t threshold_U 					:1;     // U-protection: 																'1' - ±15%		'0' - ±10%
+					 uint8_t fail_blocking  			:1;			// 1_ON/OFF motor blocking after 5 fail-toggle		'1' - ON			'0' - OFF
+					 uint8_t lev1_logic   				:1;			// 2_NO/NC in normal state												'1' - NO			'0' - NC
+					 uint8_t lev2_logic   				:1;			// 3_NO/NC in normal state												'1' - NO			'0' - NC
+					 uint8_t logic_inv		 				:1;			// 4_pump or drain logic													'1' - PUMP		'0' - DRAIN
+					 uint8_t input_delay 					:1;     // 5_delay after changing level state: 						'1' - 5s			'0' - 10s
+					 uint8_t threshold_U 					:1;     // 6_U-protection: 																'1' - ±15%		'0' - ±10%
 	
 	__packed uint8_t i_sw									:4;			// 4 switches for current adjustment of motor
 																								// from 1 to 16A

@@ -5,8 +5,8 @@
 #include "blink.h"
 
 enum error {
-	E_OFF,
-	E_U = 555,
+	E_OFF,							// no error
+	E_U = 555,					// 
 	E_I = 666,
 	ELI = 777,
 	ELO = 888,

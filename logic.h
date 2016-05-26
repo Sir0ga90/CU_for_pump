@@ -10,7 +10,7 @@ inline void drain(void);
 inline void work_logic(void);
 
 typedef enum{
-	err, e_pump, e_drain
+	e_err, e_pump, e_drain
 } Logic;
 
 #endif

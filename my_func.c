@@ -86,7 +86,6 @@ void read_button_interrupt(void){
 			chanel++;
 			if (chanel == toggle){ 
 				chanel = _I_;
-				HAL_GPIO_WritePin(rel_GPIO_Port, rel_Pin, GPIO_PIN_SET);
 			}
 			button = off;
 			break;

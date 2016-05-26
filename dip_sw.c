@@ -103,6 +103,6 @@ void set_work_logic(void){
 	else if (dip.logic_inv == SET)
 		logic = e_pump;
 	else
-		logic = err;
+		logic = e_err;
 }
 

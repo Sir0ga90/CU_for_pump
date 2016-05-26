@@ -20,6 +20,7 @@ void check_u(void){
 					
 					stop();
 					error_type = E_U;
+				
 		}
 		else error_type = E_OFF;
 }
@@ -44,7 +45,13 @@ void check_well(void){
 	if (w_level == dry){
 		stop();
 		error_type = ELO;
+		
+		while (w_level == dry){
+			get_well_level();
+		}
+		
 	}
+	
 	else error_type = E_OFF;
 }
 //-------------------------------------------------------------------
@@ -52,8 +59,14 @@ void check_lvls(void){
 	if (tank.error_level == SET){
 		stop();
 		error_type = ELL;
-	}
 		
+		while (tank.error_level == SET){
+			level_work();
+		}
+		
+	}
+	
+	else error_type = E_OFF;	
 }
 //-------------------------------------------------------------------
 void error_check(void){

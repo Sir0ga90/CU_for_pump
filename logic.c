@@ -6,7 +6,7 @@ extern Logic logic;
 //------------------------------------------------------------------------------------
 void pump(void){
 
-	if (tank.full == SET || tank.error_level == SET){
+	if (tank.full == SET){
 		HAL_GPIO_WritePin(rel_GPIO_Port, rel_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(led_work_GPIO_Port, led_work_Pin, GPIO_PIN_RESET);
 		return;
@@ -51,8 +51,9 @@ void work_logic(void){
 		drain();
 	}
 	
-	else 
-		stop();
-	
+	else {
+		logic = e_err;
+		stop();		
+	} 
 	
 }
