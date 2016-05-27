@@ -2,6 +2,7 @@
 #include "blink.h"
 #include "math.h"
 #include "level.h"
+#include "error.h"
 //------------------------------------------------------------------------------------------------------------------------------------Global_varaibles
 
 //------------------------------------------------------------------------------------------------------------------------------------Extern_varaibles
@@ -16,6 +17,8 @@ extern State button;
 extern uint8_t push_flag;
 
 extern Chanel chanel;
+
+extern enum error error_type;
 //------------------------------------------------------------------------------------------------------------------------------------Extern_functions
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -26,10 +29,10 @@ uint32_t calculate_val(uint32_t adc_val){														//return real val for 3.3
 																																		// "*100" for flush val in 3 seg disp
 }
 //----------------------------------------------------------------------------------------------------------------------------------------------------
-uint8_t counter = 0;		// counter for sigments of led: for 1 interrupt 1 segment
-uint32_t tmp = 0;
-uint32_t dig = 0;
-uint8_t dp = 0;
+static uint8_t counter = 0;		// counter for sigments of led: for 1 interrupt 1 segment
+static uint32_t tmp = 0;
+static uint32_t dig = 0;
+static uint8_t dp = 0;
 	
 void dig_to_disp(uint32_t out_dig){
 	switch (counter){
@@ -47,15 +50,17 @@ void dig_to_disp(uint32_t out_dig){
 			init_disp();
 			on_seg_2();
 		
-			if (chanel == _I_) dp = 1;				// unpdb
-			dig_to_port(dig, dp);
-			dp = 0;														// unpdb	
+			if (error_type == E_OFF){
+				if (chanel == _I_) dp = 1;
+				else dp = 0;
+			}
+		
+			dig_to_port(dig, dp);															
 			break;
 		case 2:
 			dig = tmp%10;
 			init_disp();
 			on_seg_1();
-			//dp = 1;
 			dig_to_port(tmp, dp);
 			break;
 	}
@@ -157,7 +162,7 @@ uint32_t sampl_val_3(Chanel chanel){ //unused
 	
 	
 	out_d = calculate_val(adc_to_led[chanel]); 			// calc real val
-	out_d_LED += out_d;															// samping(adding) real values
+	out_d_LED += out_d;															// sampling(adding) real values
 	sampl_count++;
 	if (sampl_count == 100){
 		out_d_LED /= 100;															// get avarage value of last 100 measuring
@@ -177,7 +182,7 @@ uint32_t calculate_val_ac(uint32_t adc_val){			// convertion val from adc to rea
 void store_val(void){
 	static uint8_t i_devider = 12;
 	static uint8_t u_devider = 165;
-	I_accum += ((adc_val[_I_]/i_devider) * (adc_val[_I_]/i_devider));						// devider selected manual 
+	I_accum += ((adc_val[_I_]*10/i_devider) * (adc_val[_I_]*10/i_devider));			// devider selected manual 
 	U_accum += ((adc_val[_U_]*10/u_devider) * (adc_val[_U_]*10/u_devider));			// to have more accuracy & not to work with float val's - "*10" & selecteble devider 
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------

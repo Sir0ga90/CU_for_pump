@@ -106,7 +106,7 @@ void init_disp(void){
 //--------------------------------------------------------------------------
 uint32_t disp_chanel(void){
 	if (chanel == _I_)
-		return I_val;
+		return I_val;   // * 10 decimal part of current
 	else 
 		return U_val;
 }

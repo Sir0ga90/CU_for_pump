@@ -15,7 +15,7 @@ typedef struct dip_sw_st{
 					 uint8_t input_delay 					:1;     // 5_delay after changing level state: 						'1' - 5s			'0' - 10s
 					 uint8_t threshold_U 					:1;     // 6_U-protection: 																'1' - ±15%		'0' - ±10%
 	
-	__packed uint8_t i_sw									:4;			// 4 switches for current adjustment of motor
+	__packed uint8_t i_sw									:4;			// 7-10 - 4 switches for current adjustment of motor
 																								// from 1 to 16A
 																								// in form of 4-bit number:
 																								//	 			dip_sw:	7		8		9		10		value, A
@@ -42,6 +42,7 @@ typedef struct dip_sw_st{
 
 inline void get_dip_sw_vals(void);
 inline void enable_func_vals(void);
+inline void set_I_tres(void);
 inline void set_U_tres(void);
 inline void set_logic_lev1(void);
 inline void set_logic_lev2(void);

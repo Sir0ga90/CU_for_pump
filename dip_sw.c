@@ -25,10 +25,10 @@ void get_dip_sw_vals(void){
 	dip.input_delay  	= HAL_GPIO_ReadPin(dip_input_time_GPIO_Port, dip_input_time_Pin);
 	dip.threshold_U   = HAL_GPIO_ReadPin(dip_prot_tres_u_GPIO_Port, dip_prot_tres_u_Pin);
 	
-	static uint16_t i;
+	static uint16_t i = 0;
 	i = GPIOB->IDR & 960;        	// 960 = 0000 0011 1100 0000 - for bits of PORT_B wich are 4_current DIP_switches
 	i >>= 6;											// 0000 0011 1100 0000 -> 0000 0000 0000 1111 = 6 time right-shifting
-	dip.i_sw = i;
+	dip.i_sw = ~i;								// inverting to make bound accordig to real dip-switch (when dip switch is ON it is in LOW level)
 	
 }
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void set_U_tres(void){
 }
 //---------------------------------------------------------------------------------
 void set_I_tres(void){							
-	tres_I = (double)(dip.i_sw + 1);
+	tres_I = (double)(dip.i_sw + 1)*10; // *10 to increase accuracy on display
 }
 //---------------------------------------------------------------------------------
 void set_logic_lev1(void){
