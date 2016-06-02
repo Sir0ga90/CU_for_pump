@@ -77,11 +77,6 @@ void level_indication(void){
 	else
 		HAL_GPIO_WritePin(led_lev1_GPIO_Port, led_lev1_Pin, GPIO_PIN_RESET);
 	
-	if (w_level == dry)
-		HAL_GPIO_WritePin(led_fail_GPIO_Port, led_fail_Pin, GPIO_PIN_SET);
-	else
-		HAL_GPIO_WritePin(led_fail_GPIO_Port, led_fail_Pin, GPIO_PIN_RESET);
-
 }
 //---------------------------------------------------------------------------------------
 

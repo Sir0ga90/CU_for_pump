@@ -2,11 +2,13 @@
 #include "stm32f0xx_hal.h"
 #include "level.h"
 #include "my_func.h"
+#include "error.h"
 
 extern uint16_t out_dig;
 extern uint32_t I_val;
 extern uint32_t U_val;
 
+extern enum error error_type;
 
 void delay(){
 	HAL_Delay(6);
@@ -106,6 +108,13 @@ void init_disp(void){
 //--------------------------------------------------------------------------
 uint32_t disp_chanel(void){
 	if (chanel == _I_)
+		return I_val;   // * 10 decimal part of current
+	else 
+		return U_val;
+}
+//---------------------------------------------------------------------------
+uint32_t disp_err_chanel(void){
+	if (error_type == E_I || error_type == ELI)
 		return I_val;   // * 10 decimal part of current
 	else 
 		return U_val;

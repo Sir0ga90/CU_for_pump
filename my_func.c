@@ -1,25 +1,10 @@
 #include "my_func.h"
+#include "stm32f030x8.h"
+#include "stm32f0xx.h"                  // Device header
 #include "blink.h"
 #include "math.h"
 #include "level.h"
-#include "error.h"
 //------------------------------------------------------------------------------------------------------------------------------------Global_varaibles
-
-//------------------------------------------------------------------------------------------------------------------------------------Extern_varaibles
-extern uint32_t I_accum;
-extern uint32_t U_accum;
-extern uint32_t adc_val[2];
-extern uint32_t I_val;
-extern uint32_t U_val;
-extern uint32_t cnt;
-extern State button;
-
-extern uint8_t push_flag;
-
-extern Chanel chanel;
-
-extern enum error error_type;
-//------------------------------------------------------------------------------------------------------------------------------------Extern_functions
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 uint32_t calculate_val(uint32_t adc_val){														//return real val for 3.3V meter
@@ -34,7 +19,7 @@ static uint32_t tmp = 0;
 static uint32_t dig = 0;
 static uint8_t dp = 0;
 	
-void dig_to_disp(uint32_t out_dig){
+void dig_to_disp(uint32_t out_dig, Val_on_disp *odl_f){
 	switch (counter){
 		case 0:
 			tmp = out_dig;
@@ -49,12 +34,11 @@ void dig_to_disp(uint32_t out_dig){
 			tmp = tmp/10;
 			init_disp();
 			on_seg_2();
-		
-			if (error_type == E_OFF){
-				if (chanel == _I_) dp = 1;
-				else dp = 0;
+			
+			if (chanel == _I_ && *odl_f == e_cnl){
+				dp = 1;
 			}
-		
+				
 			dig_to_port(dig, dp);															
 			break;
 		case 2:
@@ -194,3 +178,4 @@ void get_real_val(void){
 		cnt = 0;
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
+

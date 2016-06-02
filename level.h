@@ -6,9 +6,11 @@
 #include "stm32f0xx_hal.h"
 
 //---------------------------------------------------------------types
-typedef enum {dry, full}Well_level;																			// levels in well
+typedef enum {
+	dry, 
+	full
+}Well_level;																			// levels in well
 
-//enum Sen{sen_dry, sen_in_water};
 
 typedef struct Sen_st{
 	
@@ -36,6 +38,5 @@ inline Tank get_tank_level(void);
 inline void get_well_level(void);
 inline void level_indication(void);
 inline void level_work(void);
-inline void stop(void);
 
 #endif

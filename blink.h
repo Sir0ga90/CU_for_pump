@@ -19,7 +19,7 @@ void on_dig(uint8_t digit);
 void init_disp(void);
 
 uint32_t disp_chanel(void);
-
+uint32_t disp_err_chanel(void);
 
 #define A 	GPIO_PIN_15
 #define B 	GPIO_PIN_11
