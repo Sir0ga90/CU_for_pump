@@ -4,7 +4,16 @@
 #define _DIP_SW_H_
 
 #include "stm32f0xx_hal.h"
+#include "level.h"
+#include "logic.h"
 
+extern double tres_U;
+extern double tres_I;
+extern Sens sen1;
+extern Sens sen2;
+
+extern uint8_t input_delay;
+extern Logic logic;
 //----------------------------------------------------------------------------------------------------------------------------
 typedef struct dip_sw_st{
 	

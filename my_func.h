@@ -49,7 +49,7 @@ extern uint8_t push_flag;
 
 extern Chanel chanel;
 
-extern enum error error_type;
+extern Error error_type;
 
 
 #endif

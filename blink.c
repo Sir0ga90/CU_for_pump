@@ -8,7 +8,7 @@ extern uint16_t out_dig;
 extern uint32_t I_val;
 extern uint32_t U_val;
 
-extern enum error error_type;
+extern Error error_type;
 
 void delay(){
 	HAL_Delay(6);

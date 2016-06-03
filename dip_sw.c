@@ -1,20 +1,13 @@
 // by Sir0ga90, 23.04.2016
 
 #include "dip_sw.h"
-#include "level.h"
-#include "logic.h"
+
 //------------------------------------------------------------------------------
 extern dip_sw dip;
 
 //extern uint32_t U_val;
 //extern uint32_t I_val;
-extern double tres_U;
-extern double tres_I;
-extern Sens sen1;
-extern Sens sen2;
 
-extern uint8_t input_delay;
-extern Logic logic;
 
 void get_dip_sw_vals(void){
 	

@@ -1,16 +1,16 @@
 #ifndef _ERROR_H_
 #define _ERROR_H_
 
-#include "logic.h"
-
-enum error {
+typedef enum e_error{
 	E_OFF,							// no error
 	E_U = 555,					// voltage error
 	E_I = 666,					// high current error
 	ELI = 777,					// low current error
 	ELO = 888,					// dry well
 	ELL = 999						// wrong placment of sensors in tank
-};
+}Error;
+
+#include "logic.h"
 //-----------------------------------------------------------------------------------
 typedef enum E_Val_on_disp{
 	e_no_val,
@@ -34,7 +34,7 @@ extern uint32_t 		U_val;
 extern double 			tres_U;
 extern double 			tres_I;
 extern Well_level 	w_level;
-extern enum error 	error_type;
+extern Error			 	error_type;
 extern Tank 				tank;
 
 static uint16_t nominal_U = 220;   		// 220 volts
@@ -42,5 +42,7 @@ extern uint8_t work_counter;
 
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim1;
+
+extern void start_u_i_check( Motor_state *motor);
 
 #endif
