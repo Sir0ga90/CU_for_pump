@@ -31,4 +31,7 @@ extern Tank tank;
 extern Logic logic;
 extern uint8_t work_flag;
 
+extern uint8_t start_flag_u;
+extern uint8_t start_flag_i;
+
 #endif

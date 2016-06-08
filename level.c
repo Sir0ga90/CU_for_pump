@@ -5,12 +5,7 @@
 
 
 //---------------------------------------------------------------------------------------
-extern Well_level 	w_level;
-extern Tank 				tank;
-extern Sens					sen1;
-extern Sens					sen2;
 
-extern TIM_HandleTypeDef htim14;
 
 uint8_t wait_flag = 0;
 
@@ -18,7 +13,6 @@ uint8_t work_counter = 0;
 
 Tank last_tank = {0, 0, 0, 0};
 
-extern uint8_t input_delay;
 //---------------------------------------------------------------------------------------for level_struct
 Tank get_tank_level(void){
 	
@@ -58,14 +52,46 @@ Tank get_tank_level(void){
 	
 }
 //----------------------------------------------------------------------------------------
-void get_well_level(void){
+Well_level get_well_level(void){
+	Well_level local_well;
+	
 	if (HAL_GPIO_ReadPin(input_fail_GPIO_Port, input_fail_Pin) == RESET)
-		w_level = full;
+		local_well = full;
 	else 
-		w_level = dry;
+		local_well = dry;
+	
+	return local_well;
 }
 //----------------------------------------------------------------------------------------
+uint8_t flag_well;
+
+void well_level_work(void){
+	Well_level func_well;
+	func_well = get_well_level();
+	
+	if (func_well != w_level && flag_well == RESET){
+		OnSwTimer(&soft_timer[well_in_tim], SWTIMER_MODE_WAIT_ON, input_delay);
+		soft_timer[well_in_tim].On = 1;
+		flag_well = SET;
+	}
+	else if (soft_timer[well_in_tim].Out == SET && flag_well == SET){
+		w_level = func_well;
+		
+		flag_well = RESET;
+		
+		soft_timer[well_in_tim].Out = RESET;
+		soft_timer[well_in_tim].On = RESET;
+	}
+}
+	
+//----------------------------------------------------------------------------------------
 void level_indication(void){
+	
+	if (tank.error_level == 1){
+		HAL_GPIO_WritePin(led_lev2_GPIO_Port, led_lev1_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(led_lev1_GPIO_Port, led_lev2_Pin, GPIO_PIN_RESET);
+		return;
+	}
 	
 	if (tank.full == 1)
 		HAL_GPIO_WritePin(led_lev2_GPIO_Port, led_lev2_Pin, GPIO_PIN_SET);
@@ -79,36 +105,66 @@ void level_indication(void){
 	
 }
 //---------------------------------------------------------------------------------------
+uint8_t flag_1_lev = 0;
+uint8_t flag_2_lev = 0;
+uint8_t flag_err_lev = 0;
 
 void level_work(void){
 	
 	Tank func_tank = {0, 0, 0, 0};
+
+	func_tank = get_tank_level();
 	
-	if (wait_flag == RESET){
-		
-		func_tank = get_tank_level();
+	if(w_level != w_err){																	// avoid work before first take of well_level
 	
-		if (func_tank.full 				!= 	tank.full 				||
-				func_tank.half_full 	!= 	tank.half_full 		||
-				func_tank.error_level != 	tank.error_level 	||
-				func_tank.empty 			!= 	tank.empty) {
-					
-					HAL_TIM_Base_Start_IT(&htim14);
-					
-					wait_flag = SET;
-					last_tank = func_tank;
-				}
+		if ( (func_tank.empty != tank.empty 					|| 
+					func_tank.half_full != tank.half_full)	&& 
+					flag_1_lev == RESET){
+			OnSwTimer(&soft_timer[lev_1_tim], SWTIMER_MODE_WAIT_ON, input_delay);
+			soft_timer[lev_1_tim].On = 1;
+			flag_1_lev = SET;
 		}
-	
-	else if	(work_counter >= input_delay){
+		else if (soft_timer[lev_1_tim].Out == SET && flag_1_lev == SET){
+			tank.empty = func_tank.empty;
+			tank.half_full = func_tank.half_full;
+			
+			flag_1_lev = RESET;
+			
+			soft_timer[lev_1_tim].Out = RESET;
+			soft_timer[lev_1_tim].On = RESET;
+		}
 		
-		wait_flag = RESET;
-		HAL_TIM_Base_Stop_IT(&htim14);
-		tank = last_tank;
-		work_counter = 0;
-	
+		
+		
+		if (func_tank.full != tank.full && flag_2_lev == RESET){
+			OnSwTimer(&soft_timer[lev_2_tim], SWTIMER_MODE_WAIT_ON, input_delay);
+			soft_timer[lev_2_tim].On = 1;
+			flag_2_lev = SET;
+		}
+		else if (soft_timer[lev_2_tim].Out == SET && flag_2_lev == SET){
+			tank.full = func_tank.full;
+			
+			flag_2_lev = RESET;
+			
+			soft_timer[lev_2_tim].Out = RESET;
+			soft_timer[lev_2_tim].On = RESET;
+		}
+		
+		
+		if (func_tank.error_level != tank.error_level && flag_err_lev == RESET){
+			OnSwTimer(&soft_timer[lev_err_tim], SWTIMER_MODE_WAIT_ON, input_delay);
+			soft_timer[lev_err_tim].On = 1;
+			flag_err_lev = SET;
+		}
+		else if (soft_timer[lev_err_tim].Out == SET && flag_err_lev == SET){
+			tank.error_level = func_tank.error_level;
+			
+			flag_err_lev = RESET;
+			
+			soft_timer[lev_err_tim].Out = RESET;
+			soft_timer[lev_err_tim].On = RESET;
+		}
 	}
-	
 }
 
 //---------------------------------------------------------------------------------------

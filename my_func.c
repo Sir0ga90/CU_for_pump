@@ -128,10 +128,6 @@ void set_but_vals(void){
 		if (chanel == toggle) chanel = _U_;
 	}
 	
-	if (button == w_rst){
-		HAL_GPIO_TogglePin(led_work_GPIO_Port, led_work_Pin);
-	}
-	
 	button = off;
 	
 }

@@ -1,10 +1,10 @@
 #include "error.h"
 #include "my_func.h"
-#include "dip_sw.h"
 #include "blink.h"
 #include "dip_sw.h"
 #include "level.h"
 #include "sw_timer.h"
+#include "dip_sw.h"
 
 uint8_t work_flag = 0;
 uint8_t st_flag = 0;
@@ -13,11 +13,12 @@ uint8_t start_flag_i = 0;
 
 //--------------------------------------------------------------
 #if (SwTimerCount>0)
-volatile SW_TIMER ERR_TIMER[SwTimerCount]; //declaration of sw_tim's
+ SW_TIMER volatile soft_timer[SwTimerCount]; //declaration of sw_tim's
 #endif
 
 uint8_t u_delay = 10;
 uint8_t i_delay = 5;
+uint16_t well_err_del = 120;   //while debug
 
 uint8_t err_toggle_count = 0;
 
@@ -74,13 +75,13 @@ void while_error_delay(Motor_state *motor){
 	
 	stop( motor );
 	
-	start_flag_u = RESET;
-	ERR_TIMER[_U_].On = 0;
-	ERR_TIMER[_U_].Off = 1;
 	
-	start_flag_i = RESET;
-	ERR_TIMER[_I_].On = 0;
-	ERR_TIMER[_I_].Off = 1;
+	soft_timer[st_u_tim].On = 0;
+	soft_timer[st_u_tim].Off = 1;
+	
+	
+	soft_timer[st_i_tim].On = 0;
+	soft_timer[st_i_tim].Off = 1;
 	
 	switch (error_type) {
 		case E_U:
@@ -106,8 +107,11 @@ void while_error_delay(Motor_state *motor){
 			
 		case ELO:
 			while (w_level == dry){
-			get_well_level();
+			well_level_work();
 			}
+			if (flag_auto_blocking == SET){				
+				while_well_err_delay();
+			}			
 			HAL_TIM_Base_Stop_IT(&htim3);
 			break;
 			
@@ -132,12 +136,12 @@ void error_check(Motor_state *motor){
 	}
 		
 	if (start_flag_i == RESET){		
-		start_u_i_check(motor );
+		start_u_i_check( motor );
 	}
 	else check_i();
 	
 	if (start_flag_u == RESET){		
-		start_u_i_check(motor );
+		start_u_i_check( motor );
 	}
 	else check_u();
 	
@@ -170,27 +174,84 @@ void err_disp_toggle(void){
 void start_u_i_check( Motor_state *motor){
 	if ( *motor == m_on ){
 			if (work_flag == 0){
-				OnSwTimer(&ERR_TIMER[_U_], SWTIMER_MODE_WAIT_ON, u_delay);
-				ERR_TIMER[_U_].On = 1;
-				ERR_TIMER[_U_].Off = 0;
+				OnSwTimer(&soft_timer[st_u_tim], SWTIMER_MODE_WAIT_ON, u_delay);
+				soft_timer[st_u_tim].On = 1;
+				soft_timer[st_u_tim].Off = 0;
 				
-				OnSwTimer(&ERR_TIMER[_I_], SWTIMER_MODE_WAIT_ON, i_delay);
-				ERR_TIMER[_I_].On = 1;
-				ERR_TIMER[_I_].Off = 0;
+				OnSwTimer(&soft_timer[st_i_tim], SWTIMER_MODE_WAIT_ON, i_delay);
+				soft_timer[st_i_tim].On = 1;
+				soft_timer[st_i_tim].Off = 0;
 				
-				HAL_TIM_Base_Start_IT(&htim1);
 				work_flag = 1;
 			}
 			
-			if (ERR_TIMER[_U_].Out == 1 && start_flag_u == RESET){
+			if (soft_timer[st_u_tim].Out == 1 && start_flag_u == RESET){
 				start_flag_u = SET;
-				ERR_TIMER[_U_].On = 0;
-				ERR_TIMER[_U_].Off = 1;
+				soft_timer[st_u_tim].On = 0;
+				soft_timer[st_u_tim].Off = 1;
 			}
-			if (ERR_TIMER[_I_].Out == 1){
+			if (soft_timer[st_i_tim].Out == 1){
 				start_flag_i = SET;
-				ERR_TIMER[_I_].On = 0;
-				ERR_TIMER[_I_].Off = 1;
+				soft_timer[st_i_tim].On = 0;
+				soft_timer[st_i_tim].Off = 1;
 			}
 		}
+}
+//---------------------------------------------------------------------while well error delay & subfunc's
+void while_well_err_delay(void){
+	OnSwTimer(&soft_timer[well_err_tim], SWTIMER_MODE_WAIT_ON, well_err_del);
+	soft_timer[well_err_tim].On = SET;
+	
+	static const uint8_t count_val = 9;						// 9 for 5-cycle w_level toggling (full -> dry = 1, dry -> full = +1 &s.o.) 
+	
+	volatile uint8_t lev_toggle_cnt = 0;					// counter of toggling fail input
+	Well_level last_input_state = full;
+	
+	while (soft_timer[well_err_tim].Out != SET){
+		toggling_cnt(&lev_toggle_cnt, &last_input_state);
+		
+		if (lev_toggle_cnt >= count_val){
+			wait_rst_but();
+			return;
+		}
+		
+		if (w_level == full){
+			read_button();
+			if (button == w_rst){
+				button = off;
+				soft_timer[well_err_tim].On = RESET;
+				return;
+			}
+		}
+	}
+	soft_timer[well_err_tim].On = RESET;
+	soft_timer[well_err_tim].Out = RESET;
+	
+	if (w_level == full) return;
+	else{
+		while (w_level == dry) well_level_work();
+		wait_rst_but();
+		if (button == w_rst){
+			button = off;
+			return;
+		}
+	}
+}
+//----toggling counter
+void toggling_cnt(volatile uint8_t *cnt, Well_level *state){
+	well_level_work();
+	if (w_level != *state){
+		*cnt++;
+		
+		if (*cnt % 2 == 0) *state = full;
+		else *state = dry;
+	}
+}
+//----wait only wrst but after 5time toggling of input
+void wait_rst_but(void){
+	while (button != w_rst){
+		while (w_level == dry) well_level_work();
+		read_button();
+	}
+	button = off;
 }

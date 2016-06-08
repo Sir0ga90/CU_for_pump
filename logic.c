@@ -31,6 +31,8 @@ void drain(Motor_state *motor, Error *error_type){
 //-------------------------------------------------------------------------------------
 void stop	(Motor_state *motor){
 	motor_off( motor );
+	start_flag_u = RESET;
+	start_flag_i = RESET;
 }
 //-------------------------------------------------------------------------------------
 void work_logic(Motor_state *motor, Error *error_type){

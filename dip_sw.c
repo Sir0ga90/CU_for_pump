@@ -3,20 +3,17 @@
 #include "dip_sw.h"
 
 //------------------------------------------------------------------------------
-extern dip_sw dip;
-
-//extern uint32_t U_val;
-//extern uint32_t I_val;
+extern Dip_sw dip;
 
 
 void get_dip_sw_vals(void){
 	
-	dip.fail_blocking = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_7);    		// on/off automatic blocking
-	dip.lev1_logic    = HAL_GPIO_ReadPin(dip_lev_1_logic_GPIO_Port, dip_lev_1_logic_Pin);				// on
-	dip.lev2_logic    = HAL_GPIO_ReadPin(dip_lev_2_logic_GPIO_Port, dip_lev_2_logic_Pin);
-	dip.logic_inv     = HAL_GPIO_ReadPin(dip_logic_inv_GPIO_Port, dip_logic_inv_Pin);
-	dip.input_delay  	= HAL_GPIO_ReadPin(dip_input_time_GPIO_Port, dip_input_time_Pin);
-	dip.threshold_U   = HAL_GPIO_ReadPin(dip_prot_tres_u_GPIO_Port, dip_prot_tres_u_Pin);
+	dip.fail_blocking = HAL_GPIO_ReadPin(dip_blocking_fail_GPIO_Port, dip_blocking_fail_Pin);    		// on/off automatic blocking
+	dip.lev1_logic    = HAL_GPIO_ReadPin(dip_lev_1_logic_GPIO_Port, dip_lev_1_logic_Pin);						// on - NC, 			off - NO
+	dip.lev2_logic    = HAL_GPIO_ReadPin(dip_lev_2_logic_GPIO_Port, dip_lev_2_logic_Pin);						// on - NC, 			off - NO
+	dip.logic_inv     = HAL_GPIO_ReadPin(dip_logic_inv_GPIO_Port, dip_logic_inv_Pin);								// on - drain, 		off - pump
+	dip.input_delay  	= HAL_GPIO_ReadPin(dip_input_time_GPIO_Port, dip_input_time_Pin);							// on - 10sec,    off - 5sec
+	dip.threshold_U   = HAL_GPIO_ReadPin(dip_prot_tres_u_GPIO_Port, dip_prot_tres_u_Pin);						// on - 15%,			off - 10%
 	
 	static uint16_t i = 0;
 	i = GPIOB->IDR & 960;        	// 960 = 0000 0011 1100 0000 - for bits of PORT_B wich are 4_current DIP_switches
@@ -25,23 +22,10 @@ void get_dip_sw_vals(void){
 	
 }
 //------------------------------------------------------------------------------
-//void fail_blocking_toggle(void){
-//	switch (dip.fail_blocking){
-//		case RESET:
-//			break;
-//		case SET:
-//	}
-//			
-//}
-////------------------------------------------------------------------------------
-//void enable_func_vals(void){
-//	if (dip.fail_blocking == SET)
-//		
-//}
-////------------------------------------------------------------------------------
-//void fail_blocking(void){
-//	
-//}
+uint8_t set_well_lev_auto_blocking(void){
+	return dip.fail_blocking == RESET ? (SET) : (RESET);
+}
+//--------------------------------------------------------------------------------
 void set_U_tres(void){
 	
 	static uint8_t percent_15_U_ = 33;				//15% of 220
@@ -98,4 +82,3 @@ void set_work_logic(void){
 	else
 		logic = e_err;
 }
-

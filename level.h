@@ -4,9 +4,11 @@
 #define LEVEL_H
 
 #include "stm32f0xx_hal.h"
+#include "sw_timer.h"
 
 //---------------------------------------------------------------types
 typedef enum {
+	w_err,
 	dry, 
 	full
 }Well_level;																			// levels in well
@@ -34,9 +36,20 @@ typedef struct Tank_st{
 //---------------------------------------------------------------extern
 
 //---------------------------------------------------------------func_prototyps
-inline Tank get_tank_level(void);
-inline void get_well_level(void);
-inline void level_indication(void);
-inline void level_work(void);
+inline Tank 				get_tank_level(void);
+inline Well_level 	get_well_level(void);
+inline void 				level_indication(void);
+inline void 				level_work(void);
+inline void 				well_level_work(void);
+
+extern volatile SW_TIMER soft_timer[SwTimerCount];
+
+extern Well_level 	w_level;
+extern Tank 				tank;
+extern Sens					sen1;
+extern Sens					sen2;
+
+extern TIM_HandleTypeDef htim14;
+extern uint8_t input_delay;
 
 #endif

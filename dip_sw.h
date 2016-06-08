@@ -46,7 +46,7 @@ typedef struct dip_sw_st{
 								//																								0		1		1		1 		15
 								//																								1		1		1		1			16
 																								
-}dip_sw;
+}Dip_sw;
 //----------------------------------------------------------------------------------------------------------------------------
 
 inline void get_dip_sw_vals(void);
@@ -57,5 +57,6 @@ inline void set_logic_lev1(void);
 inline void set_logic_lev2(void);
 inline void set_input_delay(void);
 inline void set_work_logic(void);
+inline uint8_t set_well_lev_auto_blocking(void);
 
 #endif

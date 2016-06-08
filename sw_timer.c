@@ -21,7 +21,7 @@ void SwTimerWork(volatile SW_TIMER* TIMER, unsigned char Count){
 			if (TIMER->Mode==SWTIMER_MODE_WAIT_ON){ //If timer ON_delay
 				if (TIMER->On){
 					if (TIMER->LocalCount>0) TIMER->LocalCount--;
-						else {
+					else {
 							TIMER->Out=1;
 							TIMER->Status=1;
 						}

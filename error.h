@@ -11,6 +11,7 @@ typedef enum e_error{
 }Error;
 
 #include "logic.h"
+
 //-----------------------------------------------------------------------------------
 typedef enum E_Val_on_disp{
 	e_no_val,
@@ -28,6 +29,10 @@ inline void error_check(Motor_state *motor);
 inline void err_disp_toggle(void);
 inline void motor_start_delay(void);
 
+inline void while_well_err_delay(void);
+inline void toggling_cnt(volatile uint8_t *, Well_level *);
+inline void wait_rst_but(void);
+
 //=======================================================================================
 extern uint32_t 		I_val;
 extern uint32_t 		U_val;
@@ -44,5 +49,6 @@ extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim1;
 
 extern void start_u_i_check( Motor_state *motor);
+extern uint8_t flag_auto_blocking;
 
 #endif
