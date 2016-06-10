@@ -16,12 +16,13 @@ typedef enum e_error{
 typedef enum E_Val_on_disp{
 	e_no_val,
 	e_cnl,
-	e_err_tp
+	e_err_tp,
+	e_r_timer
 }Val_on_disp;
 
 //=====================================================================================
-inline void check_u(void);
-inline void check_i(void);
+inline Error check_u(void);
+inline Error check_i(void);
 inline void check_well(void);
 inline void check_lvls(Motor_state *motor);
 inline void while_error_delay(Motor_state *motor);
@@ -31,7 +32,12 @@ inline void motor_start_delay(void);
 
 inline void while_well_err_delay(void);
 inline void toggling_cnt(volatile uint8_t *, Well_level *);
-inline void wait_rst_but(void);
+inline void wait_well_rst_but(void);
+inline void start_time_filter(Timers tim, uint8_t del);
+inline void stop_time_filter(Timers tim);
+
+inline void filter_u_check(void);
+inline void wait_i_rst_but(void);
 
 //=======================================================================================
 extern uint32_t 		I_val;
@@ -50,5 +56,6 @@ extern TIM_HandleTypeDef htim1;
 
 extern void start_u_i_check( Motor_state *motor);
 extern uint8_t flag_auto_blocking;
+uint32_t revers_timer(void);
 
 #endif

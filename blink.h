@@ -3,6 +3,9 @@
 #define BLINK_H
 
 #include "stm32f030x8.h"
+#include "error.h"
+
+//--------------------------------------------------
 void delay(void);
 void dig_to_port(uint8_t dig, uint8_t dp);
 
@@ -17,7 +20,14 @@ void off_seg_1(void);
 void init_dig(void);
 void on_dig(uint8_t digit);
 void init_disp(void);
+//--------------------------------------------------
+extern uint16_t out_dig;
+extern uint32_t I_val;
+extern uint32_t U_val;
 
+extern Error error_type;
+extern uint32_t last_val_before_err;
+//--------------------------------------------------
 uint32_t disp_chanel(void);
 uint32_t disp_err_chanel(void);
 

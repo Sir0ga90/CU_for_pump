@@ -45,6 +45,8 @@ void dig_to_disp(uint32_t out_dig, Val_on_disp *odl_f){
 			dig = tmp%10;
 			init_disp();
 			on_seg_1();
+			if (*odl_f == e_r_timer) dp = 1;
+			else dp = 0;
 			dig_to_port(tmp, dp);
 			break;
 	}

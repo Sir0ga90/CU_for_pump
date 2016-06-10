@@ -4,12 +4,6 @@
 #include "my_func.h"
 #include "error.h"
 
-extern uint16_t out_dig;
-extern uint32_t I_val;
-extern uint32_t U_val;
-
-extern Error error_type;
-
 void delay(){
 	HAL_Delay(6);
 }
@@ -115,7 +109,7 @@ uint32_t disp_chanel(void){
 //---------------------------------------------------------------------------
 uint32_t disp_err_chanel(void){
 	if (error_type == E_I || error_type == ELI)
-		return I_val;   // * 10 decimal part of current
+		return last_val_before_err;   // * 10 decimal part of current
 	else 
 		return U_val;
 }

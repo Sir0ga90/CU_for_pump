@@ -119,7 +119,7 @@ void level_work(void){
 	
 		if ( (func_tank.empty != tank.empty 					|| 
 					func_tank.half_full != tank.half_full)	&& 
-					flag_1_lev == RESET){
+					flag_1_lev == RESET													){
 			OnSwTimer(&soft_timer[lev_1_tim], SWTIMER_MODE_WAIT_ON, input_delay);
 			soft_timer[lev_1_tim].On = 1;
 			flag_1_lev = SET;
