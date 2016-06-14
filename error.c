@@ -6,11 +6,6 @@
 #include "sw_timer.h"
 #include "dip_sw.h"
 
-uint8_t work_flag = 0;
-uint8_t st_flag = 0;
-uint8_t start_flag_u = 0;
-uint8_t start_flag_i = 0;
-
 //--------------------------------------------------------------
 #if (SwTimerCount>0)
  SW_TIMER volatile soft_timer[SwTimerCount]; //declaration of sw_tim's
@@ -18,7 +13,7 @@ uint8_t start_flag_i = 0;
 
 static const uint8_t u_delay = 10;					// start delay in second's
 static const uint8_t i_delay = 5;						// start delay
-static const uint16_t well_err_del = 300;   // val while debug, must be 300
+static const uint16_t well_err_del = 60;   // val while debug, must be 300
 static const uint8_t out_of_range_del = 5;  // delay for filtering out of range values of U
 static const uint8_t i_del_hi = 60;					// delay for filtering out of range value of I on HI-level
 static const uint8_t i_del_low = 30;				// delay for filtering out of range values of I on LOW-level
@@ -31,6 +26,11 @@ Val_on_disp on_display_value = e_no_val;
 
 uint32_t last_val_before_err = 0;						// val that will be toggling on display after I-error
 
+uint8_t work_flag = 0;
+uint8_t st_flag = 0;
+uint8_t start_flag_u = 0;
+uint8_t start_flag_i = 0;
+uint8_t flag_toggle_err_num = 0;
 //-----------------------------------------------------------------
 Error check_u(void){
 	if ((U_val > (nominal_U + tres_U)) || 
@@ -199,21 +199,30 @@ void err_disp_toggle(void){
 	if ( err_toggle_count <= 2 ){
 		on_display_value = e_err_tp;
 		dig_to_disp(error_type, &on_display_value);
-	}
+	}//if ( err_toggle_count <= 2 )
+	
 	else if (err_toggle_count <= 6){
 		if (error_type != ELO){
 			on_display_value = e_cnl;
 			dig_to_disp( disp_err_chanel(), &on_display_value);
-		}
-		else{
+		}//if (error_type != ELO)
+		
+		else if (w_level == full && flag_toggle_err_num == RESET){
 			on_display_value = e_r_timer;
 			dig_to_disp( revers_timer(), &on_display_value);
-		}
+		}//else if (w_level == full)
 		
-		if (err_toggle_count == 5){
+		else if (w_level == dry && flag_toggle_err_num == RESET){
+			on_display_value = e_err_tp;
+			dig_to_disp(error_type, &on_display_value);
+		}//else if (w_level == dry)
+		
+		else if (flag_toggle_err_num == SET) { init_disp(); }							//clear the display
+		
+		if (err_toggle_count > 5 ){
 			err_toggle_count = 0;
 		}
-	} // if err_toggle_count <= 5
+	} //else if (err_toggle_count <= 6)
 }
 //---------------------------------------------------------------------
 void start_u_i_check( Motor_state *motor){
@@ -247,15 +256,15 @@ void while_well_err_delay(void){
 	OnSwTimer(&soft_timer[well_err_tim], SWTIMER_MODE_WAIT_ON, well_err_del);
 	soft_timer[well_err_tim].On = SET;
 	
-	static const uint8_t count_val = 9;						// 9 for 5-cycle w_level toggling (full -> dry = 1, dry -> full = +1 &s.o.) 
-	
-	volatile uint8_t lev_toggle_cnt = 0;					// counter of toggling fail input
+	static const uint8_t count_val = 3;						// 9 for 5-cycle w_level toggling (full -> dry = 1, dry -> full = +1 &s.o.) 
+	uint8_t lev_toggle_cnt = 0;					// counter of toggling fail input
 	Well_level last_input_state = full;
 	
 	while (soft_timer[well_err_tim].Out != SET){
 		toggling_cnt(&lev_toggle_cnt, &last_input_state);
 		
 		if (lev_toggle_cnt >= count_val){
+			flag_toggle_err_num = SET;
 			wait_well_rst_but();
 			return;
 		}
@@ -267,8 +276,9 @@ void while_well_err_delay(void){
 				soft_timer[well_err_tim].On = RESET;
 				return;
 			}
-		}
-	}
+		}//if (w_level == full)
+	}//while (soft_timer[well_err_tim].Out != SET)
+	
 	soft_timer[well_err_tim].On = RESET;
 	soft_timer[well_err_tim].Out = RESET;
 	
@@ -283,13 +293,11 @@ void while_well_err_delay(void){
 	}
 }
 //----toggling counter
-void toggling_cnt(volatile uint8_t *cnt, Well_level *state){
+void toggling_cnt(uint8_t *cnt, Well_level *state){
 	well_level_work();
 	if (w_level != *state){
-		*cnt++;
-		
-		if (*cnt % 2 == 0) *state = full;
-		else *state = dry;
+		(*cnt)++;
+		*state = w_level;
 	}
 }
 //----wait only wrst but after 5time toggling of input

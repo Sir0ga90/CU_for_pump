@@ -31,7 +31,7 @@ inline void err_disp_toggle(void);
 inline void motor_start_delay(void);
 
 inline void while_well_err_delay(void);
-inline void toggling_cnt(volatile uint8_t *, Well_level *);
+inline void toggling_cnt(uint8_t *, Well_level *);
 inline void wait_well_rst_but(void);
 inline void start_time_filter(Timers tim, uint8_t del);
 inline void stop_time_filter(Timers tim);

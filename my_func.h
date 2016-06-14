@@ -23,13 +23,15 @@ extern Chanel chanel;
 //----------------------------------------------------------------------------
 
 uint32_t calculate_val(uint32_t adc_val);
-uint32_t calculate_val_ac(uint32_t adc_val);
+uint32_t calculate_val_ac_I(uint32_t adc_val);
+uint32_t calculate_val_ac_U(uint32_t adc_val);
 
 void dig_to_disp(uint32_t out_dig, Val_on_disp *);
 
 uint32_t sample_val_2(uint32_t new_adc);
 uint32_t sampl_val_3(Chanel chanel); //10000 counts
 inline void store_val(void);
+inline void store_val_2(void);
 inline void get_real_val(void);
 
 void read_button(void);

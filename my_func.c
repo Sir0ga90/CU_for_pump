@@ -35,7 +35,7 @@ void dig_to_disp(uint32_t out_dig, Val_on_disp *odl_f){
 			init_disp();
 			on_seg_2();
 			
-			if (chanel == _I_ && *odl_f == e_cnl){
+			if ( (error_type == E_I || error_type == ELI || chanel == _I_) && *odl_f == e_cnl){
 				dp = 1;
 			}
 				
@@ -46,8 +46,8 @@ void dig_to_disp(uint32_t out_dig, Val_on_disp *odl_f){
 			init_disp();
 			on_seg_1();
 			if (*odl_f == e_r_timer) dp = 1;
-			else dp = 0;
 			dig_to_port(tmp, dp);
+			dp = 0;
 			break;
 	}
 	dp = 0;
@@ -94,9 +94,9 @@ void read_button(void){
 	if (push_flag == RESET){																								// if button was not pushed before
 		
 		if ((GPIOA->IDR & but_i_u_Pin) || (GPIOA->IDR & but_w_rst_Pin)){ 			// if one of the button's is pushed
-			HAL_Delay(20);																											// debounced 	delay	
+			HAL_Delay(5);																												// first debounced 	delay	
 			if ((GPIOA->IDR & but_i_u_Pin) || (GPIOA->IDR & but_w_rst_Pin)){		// if pushed so far
-				
+				HAL_Delay(15);																										// second debounced delay
 				if (HAL_GPIO_ReadPin(but_i_u_GPIO_Port, but_i_u_Pin) == RESET){
 					button = i_u;
 					push_flag = SET;
@@ -151,7 +151,6 @@ uint32_t sampl_val_3(Chanel chanel){ //unused
 		last_d = out_d_LED;														// refresh digit on LED disp
 		sampl_count = 0;
 	}
-	//dig_to_disp(last_d);													// if counter not refresh 
 	return last_d;
 	}
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -164,8 +163,9 @@ uint32_t calculate_val_ac(uint32_t adc_val){			// convertion val from adc to rea
 void store_val(void){
 	static uint8_t i_devider = 12;
 	static uint8_t u_devider = 165;
-	I_accum += ((adc_val[_I_]*10/i_devider) * (adc_val[_I_]*10/i_devider));			// devider selected manual 
-	U_accum += ((adc_val[_U_]*10/u_devider) * (adc_val[_U_]*10/u_devider));			// to have more accuracy & not to work with float val's - "*10" & selecteble devider 
+	I_accum += ( (adc_val[_I_]*10/i_devider) * (adc_val[_I_]*10/i_devider) );			// devider selected manual 
+	U_accum += ( (adc_val[_U_]*100/u_devider) * (adc_val[_U_]*100/u_devider) );		// to have more accuracy & not to work with float val's - "*100"
+																																							// & selecteble devider 
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 void get_real_val(void){
