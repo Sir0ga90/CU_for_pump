@@ -25,12 +25,14 @@ void SwTimerWork(volatile SW_TIMER* TIMER, unsigned char Count){
 							TIMER->Out=1;
 							TIMER->Status=1;
 						}
-				}
+				}//if (TIMER->On)
 				else {
 					TIMER->Out=0;
 					TIMER->LocalCount=TIMER->Count-1;
 				}
 			}
+			
+			//-------------------------------------------------------------
 			if (TIMER->Mode==SWTIMER_MODE_WAIT_OFF){ //If timer OFF_delay
 				if (TIMER->On){
 					TIMER->Out=1;
@@ -42,6 +44,8 @@ void SwTimerWork(volatile SW_TIMER* TIMER, unsigned char Count){
 						else TIMER->Out=0;
 				}
 			}
+			
+			//-------------------------------------------------------------
 			if (TIMER->Mode==SWTIMER_MODE_CYCLE){
 				if (TIMER->Off){
 					if (TIMER->On){
@@ -65,7 +69,9 @@ void SwTimerWork(volatile SW_TIMER* TIMER, unsigned char Count){
 					TIMER->Out=0;
 					TIMER->Status=0;
 				}
-			}
+			}//if (TIMER->Mode==SWTIMER_MODE_CYCLE)
+			
+			//---------------------------------------------------------------
 			if (TIMER->Mode==SWTIMER_MODE_SINGLE){
 				if (TIMER->Off){
 					if (TIMER->On){
@@ -91,8 +97,9 @@ void SwTimerWork(volatile SW_TIMER* TIMER, unsigned char Count){
 					TIMER->Out=0;
 					TIMER->Status=0;
 				}
-			}
-
+			}//if (TIMER->Mode==SWTIMER_MODE_SINGLE)
+			
+			//------------------------------------------------------------------
 			TIMER++;
 		}
 }

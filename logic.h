@@ -33,5 +33,6 @@ extern uint8_t work_flag;
 
 extern uint8_t start_flag_u;
 extern uint8_t start_flag_i;
+extern uint8_t st_flag;
 
 #endif

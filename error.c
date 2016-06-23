@@ -13,7 +13,7 @@
 
 static const uint8_t u_delay = 10;					// start delay in second's
 static const uint8_t i_delay = 5;						// start delay
-static const uint16_t well_err_del = 60;   // val while debug, must be 300
+static const uint16_t well_err_del = 300;   // val for error delay, must be 300 (5min)
 static const uint8_t out_of_range_del = 5;  // delay for filtering out of range values of U
 static const uint8_t i_del_hi = 60;					// delay for filtering out of range value of I on HI-level
 static const uint8_t i_del_low = 30;				// delay for filtering out of range values of I on LOW-level
@@ -27,7 +27,7 @@ Val_on_disp on_display_value = e_no_val;
 uint32_t last_val_before_err = 0;						// val that will be toggling on display after I-error
 
 uint8_t work_flag = 0;
-uint8_t st_flag = 0;
+uint8_t st_flag = 0;								// set after motor start
 uint8_t start_flag_u = 0;
 uint8_t start_flag_i = 0;
 uint8_t flag_toggle_err_num = 0;
@@ -49,13 +49,13 @@ void filter_u_check(void){
 	func_u_err = check_u();
 	
 	if (func_u_err != error_type && flag_err_u == RESET){
-		start_time_filter(wk_u_tim, out_of_range_del);
+		start_timer(wk_u_tim, out_of_range_del);
 		flag_err_u = SET;
 	}
 	
 	else if (soft_timer[wk_u_tim].Out == SET && flag_err_u == SET){
 		error_type = func_u_err;
-		stop_time_filter(wk_u_tim);
+		stop_timer(wk_u_tim);
 		flag_err_u = RESET;
 	}
 	
@@ -82,16 +82,16 @@ void filter_i_check(void){
 	func_i_err = check_i();
 	
 	if (func_i_err != error_type && flag_err_i == RESET){
-		if (func_i_err == E_I) start_time_filter(wk_i_tim, i_del_hi);
+		if (func_i_err == E_I) start_timer(wk_i_tim, i_del_hi);
 		else 
-			if (func_i_err == ELI) start_time_filter(wk_i_tim, i_del_low);
+			if (func_i_err == ELI) start_timer(wk_i_tim, i_del_low);
 		flag_err_i = SET;
 	}
 	
 	else if (soft_timer[wk_i_tim].Out == SET && flag_err_i == SET){
 		error_type = func_i_err;
 		last_val_before_err = I_val;
-		stop_time_filter(wk_i_tim);
+		stop_timer(wk_i_tim);
 		flag_err_i = RESET;
 	}
 }
@@ -113,14 +113,6 @@ void while_error_delay(Motor_state *motor){
 	HAL_GPIO_WritePin(led_fail_GPIO_Port, led_fail_Pin, GPIO_PIN_SET);
 	
 	stop( motor );
-	
-	
-	soft_timer[st_u_tim].On = 0;
-	soft_timer[st_u_tim].Off = 1;
-	
-	
-	soft_timer[st_i_tim].On = 0;
-	soft_timer[st_i_tim].Off = 1;
 	
 	switch (error_type) {
 		case E_U:
@@ -168,21 +160,21 @@ void while_error_delay(Motor_state *motor){
 }
 //------------------------------------------------------------------
 void error_check(Motor_state *motor){
+	check_start( motor );
 	
-	if ( *motor == m_off ){
-		start_flag_u = RESET;
-		start_flag_i = RESET;	
-	}
-		
-	if (start_flag_i == RESET){		
+	//........................
+	if ( st_flag == SET && (start_flag_i == RESET || start_flag_u == RESET) ){
 		start_u_i_check( motor );
 	}
-	else filter_i_check();
-	
-	if (start_flag_u == RESET){		
-		start_u_i_check( motor );
+	//........
+	if (start_flag_i == SET){
+		filter_i_check();
 	}
-	else filter_u_check();
+	//........
+	if (start_flag_u == SET){
+		filter_u_check();
+	}
+	//........................
 	
 	check_well();
 	check_lvls( motor );
@@ -210,12 +202,12 @@ void err_disp_toggle(void){
 		else if (w_level == full && flag_toggle_err_num == RESET){
 			on_display_value = e_r_timer;
 			dig_to_disp( revers_timer(), &on_display_value);
-		}//else if (w_level == full)
+		}//else if (w_level == full && flag_toggle_err_num == RESET)
 		
 		else if (w_level == dry && flag_toggle_err_num == RESET){
 			on_display_value = e_err_tp;
 			dig_to_disp(error_type, &on_display_value);
-		}//else if (w_level == dry)
+		}//else if (w_level == dry && flag_toggle_err_num == RESET)
 		
 		else if (flag_toggle_err_num == SET) { init_disp(); }							//clear the display
 		
@@ -225,38 +217,47 @@ void err_disp_toggle(void){
 	} //else if (err_toggle_count <= 6)
 }
 //---------------------------------------------------------------------
-void start_u_i_check( Motor_state *motor){
+void start_u_i_check( Motor_state *motor ){
 	if ( *motor == m_on ){
-			if (work_flag == 0){
-				OnSwTimer(&soft_timer[st_u_tim], SWTIMER_MODE_WAIT_ON, u_delay);
-				soft_timer[st_u_tim].On = 1;
-				soft_timer[st_u_tim].Off = 0;
+			if (work_flag == RESET){
+				start_timer(st_u_tim, u_delay);
+				start_timer(st_i_tim, i_delay);
 				
-				OnSwTimer(&soft_timer[st_i_tim], SWTIMER_MODE_WAIT_ON, i_delay);
-				soft_timer[st_i_tim].On = 1;
-				soft_timer[st_i_tim].Off = 0;
-				
-				work_flag = 1;
-			}//if (work_flag == 0)
+				work_flag = SET;
+			}//if (work_flag == RESET)
 			
 			if (soft_timer[st_u_tim].Out == 1 && start_flag_u == RESET){
 				start_flag_u = SET;
-				soft_timer[st_u_tim].On = 0;
-				soft_timer[st_u_tim].Off = 1;
+				stop_timer(st_u_tim);
 			}
 			if (soft_timer[st_i_tim].Out == 1){
 				start_flag_i = SET;
-				soft_timer[st_i_tim].On = 0;
-				soft_timer[st_i_tim].Off = 1;
+				stop_timer(st_i_tim);
 			}
 		} //if ( *motor == m_on )
 }
-//---------------------------------------------------------------------while well error delay & subfunc's
+//------------------------------------------------------------------------
+void check_start( Motor_state *motor ){
+	if ( *motor != m_off) st_flag = SET;
+	else{
+		st_flag = RESET;							// reset all working & error flags
+		start_flag_u = RESET;					// to restart all controll functions, timers
+		start_flag_i = RESET;					// before motor start again
+		flag_err_i = RESET;						//
+		flag_err_u = RESET;						//
+		work_flag = RESET;						//
+		stop_timer(wk_i_tim);					//
+		stop_timer(wk_u_tim);					//
+		stop_timer(st_i_tim);					//
+		stop_timer(st_u_tim);					//
+	}
+}
+//======================================================================while well error delay & subfunc's
 void while_well_err_delay(void){
 	OnSwTimer(&soft_timer[well_err_tim], SWTIMER_MODE_WAIT_ON, well_err_del);
 	soft_timer[well_err_tim].On = SET;
 	
-	static const uint8_t count_val = 3;						// 9 for 5-cycle w_level toggling (full -> dry = 1, dry -> full = +1 &s.o.) 
+	static const uint8_t count_val = 9;						// 9 for 5-cycle w_level toggling (full -> dry = 1, dry -> full = +1 &s.o.) 
 	uint8_t lev_toggle_cnt = 0;					// counter of toggling fail input
 	Well_level last_input_state = full;
 	
@@ -264,8 +265,10 @@ void while_well_err_delay(void){
 		toggling_cnt(&lev_toggle_cnt, &last_input_state);
 		
 		if (lev_toggle_cnt >= count_val){
+			stop_timer( well_err_tim );
 			flag_toggle_err_num = SET;
 			wait_well_rst_but();
+			flag_toggle_err_num = RESET;
 			return;
 		}
 		
@@ -279,8 +282,7 @@ void while_well_err_delay(void){
 		}//if (w_level == full)
 	}//while (soft_timer[well_err_tim].Out != SET)
 	
-	soft_timer[well_err_tim].On = RESET;
-	soft_timer[well_err_tim].Out = RESET;
+	stop_timer( well_err_tim );
 	
 	if (w_level == full) return;
 	else{
@@ -289,8 +291,8 @@ void while_well_err_delay(void){
 		if (button == w_rst){
 			button = off;
 			return;
-		}
-	}
+		}//if (button == w_rst)
+	}//else
 }
 //----toggling counter
 void toggling_cnt(uint8_t *cnt, Well_level *state){
@@ -325,13 +327,13 @@ uint32_t revers_timer(void){
 		disp_val = func_delay;
 	return disp_val;
 }
-//--------------------------------------------------------------------filter timer's fun's
-void start_time_filter(Timers tim, uint8_t del){
+//======================================================================timer's fun's
+void start_timer(Timers tim, uint8_t del){
 	OnSwTimer(&soft_timer[tim], SWTIMER_MODE_WAIT_ON, del);
 	soft_timer[tim].On = SET;	
 }
 //---------------------------------------
-void stop_time_filter(Timers tim){
+void stop_timer(Timers tim){
 	soft_timer[tim].On = RESET;
 	soft_timer[tim].Out = RESET;
 } 

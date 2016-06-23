@@ -31,8 +31,16 @@ void drain(Motor_state *motor, Error *error_type){
 //-------------------------------------------------------------------------------------
 void stop	(Motor_state *motor){
 	motor_off( motor );
+	stop_timer( st_i_tim );
+	stop_timer( st_u_tim );
+	stop_timer(wk_i_tim);
+	stop_timer(wk_u_tim);
+	
+	work_flag = RESET;
+	st_flag = RESET;
 	start_flag_u = RESET;
 	start_flag_i = RESET;
+	
 }
 //-------------------------------------------------------------------------------------
 void work_logic(Motor_state *motor, Error *error_type){
@@ -64,6 +72,4 @@ void motor_off(Motor_state *motor){
 	HAL_GPIO_WritePin(rel_GPIO_Port, rel_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(led_work_GPIO_Port, led_work_Pin, GPIO_PIN_RESET);
 	*motor = m_off;
-	
-	work_flag = RESET;
 }

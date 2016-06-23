@@ -33,11 +33,12 @@ inline void motor_start_delay(void);
 inline void while_well_err_delay(void);
 inline void toggling_cnt(uint8_t *, Well_level *);
 inline void wait_well_rst_but(void);
-inline void start_time_filter(Timers tim, uint8_t del);
-inline void stop_time_filter(Timers tim);
+inline void start_timer(Timers tim, uint8_t del);
+inline void stop_timer(Timers tim);
 
 inline void filter_u_check(void);
 inline void wait_i_rst_but(void);
+inline void check_start( Motor_state *motor );
 
 //=======================================================================================
 extern uint32_t 		I_val;
