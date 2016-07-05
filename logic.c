@@ -64,6 +64,7 @@ void motor_on(Motor_state *motor, Error *error_type){
 	if (*error_type == E_OFF){
 		HAL_GPIO_WritePin(rel_GPIO_Port, rel_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(led_work_GPIO_Port, led_work_Pin, GPIO_PIN_SET);
+		
 		*motor = m_on;
 	}
 }

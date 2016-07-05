@@ -161,7 +161,7 @@ uint32_t calculate_val_ac(uint32_t adc_val){			// convertion val from adc to rea
 }
 //--------------------------------------------------------------------------------------------------------------------------------------------------------
 void store_val(void){
-	static uint8_t i_devider = 12;
+	static uint8_t i_devider = 96;
 	static uint8_t u_devider = 165;
 	I_accum += ( (adc_val[_I_]*10/i_devider) * (adc_val[_I_]*10/i_devider) );			// devider selected manual 
 	U_accum += ( (adc_val[_U_]*100/u_devider) * (adc_val[_U_]*100/u_devider) );		// to have more accuracy & not to work with float val's - "*100"

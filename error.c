@@ -157,13 +157,15 @@ void while_error_delay(Motor_state *motor){
 			error_type = E_OFF;
 			break;
 	}
+	flag_err_i = RESET;								// resetting err flags if non voltage error
+	flag_err_u = RESET;								// was before enabling voltage error
 }
 //------------------------------------------------------------------
 void error_check(Motor_state *motor){
 	check_start( motor );
 	
 	//........................
-	if ( st_flag == SET && (start_flag_i == RESET || start_flag_u == RESET) ){
+	if ( (st_flag == SET) && (start_flag_u == RESET) ){
 		start_u_i_check( motor );
 	}
 	//........
@@ -238,7 +240,7 @@ void start_u_i_check( Motor_state *motor ){
 }
 //------------------------------------------------------------------------
 void check_start( Motor_state *motor ){
-	if ( *motor != m_off) st_flag = SET;
+	if ( *motor == m_on) st_flag = SET;
 	else{
 		st_flag = RESET;							// reset all working & error flags
 		start_flag_u = RESET;					// to restart all controll functions, timers
