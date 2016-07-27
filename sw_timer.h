@@ -8,7 +8,7 @@
 #ifndef SW_TIMER_H_
 #define SW_TIMER_H_
 
-#define SwTimerCount  9							// number of sw timer's
+#define SwTimerCount  10							// number of sw timer's
 
 /*modes*/
 typedef enum
@@ -45,7 +45,8 @@ typedef enum{
 		lev_2_tim,			// 5_level 2 filter
 		lev_err_tim,		// 6_for wrong placement of sensors
 		well_in_tim,		// 7_level in well filter
-		well_err_tim		// 8_err in well
+		well_err_tim,		// 8_err in well
+		well_hour_tim		// 9_one hour delay
 }Timers;
 //=========================================================
 

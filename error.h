@@ -3,12 +3,13 @@
 
 typedef enum e_error{
 	E_OFF,							// no error
-	E_U = 555,					// voltage error
-	E_I = 666,					// high current error
-	ELI = 777,					// low current error
-	ELO = 888,					// dry well
-	ELL = 999						// wrong placment of sensors in tank
+	E_U,					// 555 voltage error
+	E_I,					// 666 high current error
+	ELI,					// 777 low current error
+	ELO,					// 888 dry well
+	ELL						// 999 wrong placment of sensors in tank
 }Error;
+//-------------------------------------------------------
 
 #include "logic.h"
 
@@ -33,13 +34,18 @@ inline void motor_start_delay(void);
 inline void while_well_err_delay(void);
 inline void toggling_cnt(uint8_t *, Well_level *);
 inline void wait_well_rst_but(void);
-inline void start_timer(Timers tim, uint8_t del);
+inline void start_timer(Timers tim, uint32_t del);
 inline void stop_timer(Timers tim);
 
 inline void filter_u_check(void);
 inline void wait_i_rst_but(void);
 inline void check_start( Motor_state *motor );
-
+inline void err_disp_toggle_a(void);
+inline void while_revers_timer(uint8_t *tgl_cnt);
+inline void after_timer_while_dry(uint8_t *tgl_cnt);
+inline void check_1h_tim_rst(uint8_t *tgl_cnt, const uint8_t *cnt_val);
+inline void dry_motion_err(uint8_t *tgl_cnt);
+inline void rst_1h_tim_and_cnt(uint8_t *tgl_cnt);
 //=======================================================================================
 extern uint32_t 		I_val;
 extern uint32_t 		U_val;
